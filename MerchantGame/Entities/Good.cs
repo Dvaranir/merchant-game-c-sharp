@@ -27,7 +27,7 @@ namespace MerchantGame.Entities
             Name = name;
             Quality = NormalQuality;
             QualityTag = "Best";
-            Weight = (byte)Random.Shared.Next(GoodMinWeight, GoodMaxWeight);
+            Weight = (byte) Random.Shared.Next(GoodMinWeight, GoodMaxWeight);
             Price = Random.Shared.Next(GoodMinPrice, GoodMaxPrice);
         }
         public Good(string name, float quality, byte weight, int price )
