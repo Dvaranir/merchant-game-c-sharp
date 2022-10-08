@@ -19,7 +19,7 @@ namespace MerchantGame
         const string TableMerchant =
             "CREATE TABLE IF NOT EXISTS merchant (name VARCHAR(20) PRIMARY KEY, money INTEGER);";
         const string TableGoods =
-            "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(20) PRIMARY KEY, quality REAL, weight INTEGER, normal_quality_price INTEGER);";
+            "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(20) PRIMARY KEY, quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER);";
         const string TableCities =
             "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(20) PRIMARY KEY, distance INTEGER);";
         const string TableGoodsInCart =
@@ -61,7 +61,9 @@ namespace MerchantGame
             foreach (T data in Data)
             {
                 stringBuilder.Append('(');
-                foreach (var property in data.GetType().GetProperties()) { stringBuilder.Append($"'{property.GetValue(data, null)}', ");
+                foreach (var property in data.GetType().GetProperties())
+                {
+                    stringBuilder.Append($"'{property.GetValue(data, null)}', ");
                     Console.WriteLine(property.GetValue(data));
                 }
                 stringBuilder.Length -= 2;

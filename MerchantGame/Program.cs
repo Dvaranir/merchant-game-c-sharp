@@ -20,6 +20,8 @@ model.CreacteTable();*/
 Migrations migrations = new Migrations();
 
 migrations.Migrate();
-GoodsModel.GetAllGoods();
+List<Good> Goods = GoodsModel.GetAllGoods();
+Shop shop = new(Goods);
+shop.GenerateRequiredGoods();
 
 

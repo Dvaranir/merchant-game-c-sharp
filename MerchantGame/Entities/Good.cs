@@ -10,7 +10,7 @@ namespace MerchantGame.Entities
     {
         public string Name { get; set; }
         public float Quality { get; set; }
-        public string QualityDescription { get; set; }
+        public string? QualityTag { get; set; }
         public byte Weight { get; set; }
         public int Price { get; set; }
 
@@ -26,7 +26,7 @@ namespace MerchantGame.Entities
         {
             Name = name;
             Quality = NormalQuality;
-            GenerateQualityDescription();
+            QualityTag = "Best";
             Weight = (byte)Random.Shared.Next(GoodMinWeight, GoodMaxWeight);
             Price = Random.Shared.Next(GoodMinPrice, GoodMaxPrice);
         }
@@ -34,24 +34,9 @@ namespace MerchantGame.Entities
         {
             Name = name;
             Quality = quality;
+            GenerateQualityTag();
             Weight = weight;
             Price = price;
-        }
-
-        public string GenerateQualityDescription() {
-            switch (Quality)
-            {
-                case 1.2f:
-                    return "Best";
-                case 1f:
-                    return "Normal";
-                case 0.60f:
-                    return "Slightly Spoiled";
-                case 0.25f:
-                    return "Half Spoiled";
-                case 0.1f:
-                    return "Almost Totally Spoiled";
-            }
         }
 
         public void GoBad()
@@ -59,22 +44,42 @@ namespace MerchantGame.Entities
             switch (Quality)
             {
                 case 1.2f:
-                    Quality = 1f;
+                    Quality = 0.95f;
+                    QualityTag = "Normal";
                     break;
-                case 1f:
-                    Quality = 0.60f;
+                case 0.95f:
+                    Quality = 0.55f;
+                    QualityTag = "Half Spoiled";
                     break ;
-                case 0.60f:
+                case 0.55f:
                     Quality = 0.25f;
-                    break;
-                case 0.25f:
-                    Quality = 0.1f;
-                    break;
-                case 0.1f:
-                    Quality = 0;
+                    QualityTag = "Almost Totally Spoiled";
                     break;
                 default:
-                    Name = $"Spoiled {Name}";
+                    Quality = 0.1f;
+                    QualityTag = "Spoiled";
+                    break;
+            }
+        }
+
+        public void GenerateQualityTag()
+        {
+            switch (Quality)
+            {
+                case 1.2f:
+                    QualityTag = "Best";
+                    break;
+                case 0.95f:
+                    QualityTag = "Normal";
+                    break;
+                case 0.55f:
+                    QualityTag = "Half Spoiled";
+                    break;
+                case 0.25f:
+                    QualityTag = "Almost Totally Spoiled";
+                    break;
+                default:
+                    QualityTag = "Spoiled";
                     break;
             }
         }

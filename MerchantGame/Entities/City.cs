@@ -11,17 +11,14 @@ namespace MerchantGame.Entities
     {
         public string Name { get; set; }
         public byte Distance { get; set; }
-        public List<string> GoodsInDemand { get; set; }
-        
 
         const int MaxDistance = 101;
         const int MinDistance = 50;
 
-
         public City(string name)
         {
             Name = name;
-            Distance = (byte) Random.Shared.Next(MinDistance, MaxDistance);
+            Distance = (byte) Random.Shared.Next(MinDistance, MaxDistance); 
         }
         public City(string name, byte distance)
         {

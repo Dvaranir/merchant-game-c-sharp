@@ -10,28 +10,37 @@ namespace MerchantGame.Entities
     {
         public string Name { get; set; }
         public int Money { get; set; }
-        public int CartSpeed { get; set; }
+        public byte CartSpeed { get; set; }
         public int CartCapacity { get; set; }
         public int CarryingWeight { get; set; }
         public List<Good> GoodsInCart { get; set; }
+        public byte DistanceLeft { get; set; } 
 
         const int MaxMoney = 5000;
 
-        
-
-        public Merchant(string name)
+        public Merchant(string name = "Player")
         {
             Name = name;
             CartCapacity = 2000;
             CarryingWeight = 0;
             Money = Random.Shared.Next(MaxMoney);
-            GoodsInCart = new List<Good> { };
-            //Shop = new Shop();
+            GoodsInCart = new List<Good>();
         }
 
-        public void Move(int minSpeed, int maxSpeed)
+        public void SpeedUp(byte minSpeed = 1, byte maxSpeed = 5)
         {
-            CartSpeed = Random.Shared.Next(minSpeed, maxSpeed);
+            CartSpeed = (byte) Random.Shared.Next(minSpeed, maxSpeed);
+        }
+
+        public void RideNext()
+        {
+            DistanceLeft -= CartSpeed;
+        }
+
+        public void SpeedUpAndRide(byte minSpeed = 1, byte maxSpeed = 5)
+        {
+            SpeedUp(minSpeed, maxSpeed);
+            RideNext();
         }
 
         //public void BuyGood(List<Good> goods) {
