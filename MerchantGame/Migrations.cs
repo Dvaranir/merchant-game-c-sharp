@@ -1,12 +1,14 @@
 ﻿using MerchantGame.Entities;
 using MerchantGame.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MerchantGame
 {
@@ -15,13 +17,14 @@ namespace MerchantGame
         public List<string> Tables { get; set; }
         public List<Good> Goods { get; set; }
         public List<City> Cities { get; set; }
+        public Shop Shop { get; set; }
 
         const string TableMerchant =
             "CREATE TABLE IF NOT EXISTS merchant (name VARCHAR(20) PRIMARY KEY, money INTEGER);";
         const string TableGoods =
             "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(20) PRIMARY KEY, quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER);";
         const string TableCities =
-            "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(20) PRIMARY KEY, distance INTEGER);";
+            "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(20) PRIMARY KEY, distance INTEGER, required_goods TEXT);";
         const string TableGoodsInCart =
             "CREATE TABLE IF NOT EXISTS goods_in_cart (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(20), quality REAL, weight INTEGER, normal_quality_price INTEGER);";
 
@@ -32,6 +35,9 @@ namespace MerchantGame
             Tables = new();
             Goods = new();
             Cities = new();
+            GenerateGoods();
+            Shop = new(Goods);
+            GenerateCities();
         }
 
         private void AddTables()
@@ -63,8 +69,17 @@ namespace MerchantGame
                 stringBuilder.Append('(');
                 foreach (var property in data.GetType().GetProperties())
                 {
-                    stringBuilder.Append($"'{property.GetValue(data, null)}', ");
-                    Console.WriteLine(property.GetValue(data));
+                    var PropertyValue = property.GetValue(data, null);
+
+                    if (PropertyValue is List<string> PropertyList)
+                    {
+                        string PropertyString = string.Join(";", PropertyList);
+                        stringBuilder.Append($"'{PropertyString}', ");
+                    }
+                    else
+                    {
+                        stringBuilder.Append($"'{PropertyValue}', ");
+                    }
                 }
                 stringBuilder.Length -= 2;
                 stringBuilder.Append("), ");
@@ -83,8 +98,16 @@ namespace MerchantGame
         private void GenerateGoods() =>
                Array.ForEach(GoodsNames, name => Goods.Add(new Good(name)));
 
-        private void GenerateCities() =>        
-            Array.ForEach(CitiesNames, name => Cities.Add(new City(name)));
+        private void GenerateCities() 
+        {
+            foreach (string name in CitiesNames)
+            {
+                List<string> RequiredGoods = Shop.GenerateRequiredGoods();
+                Cities.Add(new City(name, RequiredGoods));
+            }
+            
+        }
+            
 
         private void InsertGoodsInDatabase() =>
             InsertInDatabase(Goods, "goods");
@@ -94,8 +117,6 @@ namespace MerchantGame
         public void Migrate() {
             AddTables();
             CreateTables();
-            GenerateGoods();
-            GenerateCities();
             InsertGoodsInDatabase();
             InsertCitiesInDatabase();
         }

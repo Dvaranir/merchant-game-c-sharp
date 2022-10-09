@@ -31,8 +31,9 @@ namespace MerchantGame.Models
                     {
                         string Name = Reader.GetString(0);
                         byte Distance = Reader.GetByte(1);
+                        List<string> RequredGoods = Reader.GetString(2).Split(',').ToList();
 
-                        OutputList.Add(new City(Name, Distance));
+                        OutputList.Add(new City(Name, Distance, RequredGoods));
                     }
                 }
                 Connection.Close();
