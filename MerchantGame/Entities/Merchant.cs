@@ -27,15 +27,12 @@ namespace MerchantGame.Entities
             GoodsInCart = new List<Good>();
         }
 
-        public void SpeedUp(byte minSpeed = 1, byte maxSpeed = 5)
-        {
+        public void SpeedUp(byte minSpeed = 1, byte maxSpeed = 5) =>
             CartSpeed = (byte) Random.Shared.Next(minSpeed, maxSpeed);
-        }
+        
+        public void Ride() => DistanceLeft -= CartSpeed;
 
-        public void Ride()
-        {
-            DistanceLeft -= CartSpeed;
-        }
+        public void BuyGood(Good good) => GoodsInCart.Add(good);
 
         public void SpeedUpAndRide(byte minSpeed = 1, byte maxSpeed = 5)
         {
@@ -45,21 +42,5 @@ namespace MerchantGame.Entities
 
         
 
-        public void BuyGood(Good good)
-        {
-            GoodsInCart.Add(good);
-        }
-
-        //public void BuyGood(List<Good> goods) {
-        //    int GoodsLength = goods.Count;
-        //    Good RandomGood = goods[Randomizer.Next(GoodsLength - 1)];
-        //    if (
-        //        MinWeight + CarryingWeight > CartCapacity ||
-        //        Money - MinPrice <= 0
-        //        ) return;
-
-
-        //    GoodsInCart.Add(RandomGood);
-        //}
     }
 }
