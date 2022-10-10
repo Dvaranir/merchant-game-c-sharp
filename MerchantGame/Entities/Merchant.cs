@@ -16,14 +16,14 @@ namespace MerchantGame.Entities
         public List<Good> GoodsInCart { get; set; }
         public byte DistanceLeft { get; set; } 
 
-        const int MaxMoney = 5000;
+        const int MaximumMoney = 5000;
 
         public Merchant(string name = "Player")
         {
             Name = name;
             CartCapacity = 2000;
             CarryingWeight = 0;
-            Money = Random.Shared.Next(MaxMoney);
+            Money = Random.Shared.Next(MaximumMoney);
             GoodsInCart = new List<Good>();
         }
 
@@ -32,7 +32,7 @@ namespace MerchantGame.Entities
             CartSpeed = (byte) Random.Shared.Next(minSpeed, maxSpeed);
         }
 
-        public void RideNext()
+        public void Ride()
         {
             DistanceLeft -= CartSpeed;
         }
@@ -40,7 +40,14 @@ namespace MerchantGame.Entities
         public void SpeedUpAndRide(byte minSpeed = 1, byte maxSpeed = 5)
         {
             SpeedUp(minSpeed, maxSpeed);
-            RideNext();
+            Ride();
+        }
+
+        
+
+        public void BuyGood(Good good)
+        {
+            GoodsInCart.Add(good);
         }
 
         //public void BuyGood(List<Good> goods) {

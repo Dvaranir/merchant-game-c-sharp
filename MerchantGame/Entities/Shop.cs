@@ -11,6 +11,7 @@ namespace MerchantGame.Entities
         public int MinPrice { get; set; }
         public int MinWeight { get; set; }
         public List<Good> AllGoods { get; set; }
+        public int AllGoodsCount { get; set; }
 
         const int MaxRequiredGoods = 3;
 
@@ -19,18 +20,18 @@ namespace MerchantGame.Entities
             AllGoods = goods;
             MinPrice = goods.MinBy(good => good.Price)!.Price;
             MinWeight = goods.MinBy(good => good.Weight)!.Weight;
+            AllGoodsCount = goods.Count();
         }
         
         public List<string> GenerateRequiredGoods()
         {
             List<string> RequiredGoods = new();
             int NumberOfRequiredGoods = Random.Shared.Next(MaxRequiredGoods);
-            int CountOfGoods = AllGoods.Count();
             List<int> RandomNumbersBlacklist = new();
              
             while (true)
             {
-                int RandomNumber = Random.Shared.Next(CountOfGoods - 1);
+                int RandomNumber = Random.Shared.Next(AllGoodsCount - 1);
 
                 if (RandomNumbersBlacklist.Contains(RandomNumber)) continue;
 
@@ -44,5 +45,8 @@ namespace MerchantGame.Entities
 
             return RequiredGoods;
         }
+
+        public Good GenerateRandomGood() =>
+            AllGoods[Random.Shared.Next(1, AllGoodsCount - 1)];
     }
 }
