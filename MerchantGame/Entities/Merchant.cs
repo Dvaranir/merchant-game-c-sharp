@@ -14,17 +14,22 @@ namespace MerchantGame.Entities
         public int CartCapacity { get; set; }
         public int CarryingWeight { get; set; }
         public List<Good> GoodsInCart { get; set; }
+        public string DestinationCityName { get; set; }
         public byte DistanceLeft { get; set; } 
 
         const int MaximumMoney = 5000;
 
-        public Merchant(string name = "Player")
+        public Merchant(string name, 
+                        byte distanceLeft,
+                        string destinationCityName)
         {
             Name = name;
             CartCapacity = 2000;
             CarryingWeight = 0;
             Money = Random.Shared.Next(MaximumMoney);
             GoodsInCart = new List<Good>();
+            DistanceLeft = distanceLeft;
+            DestinationCityName = destinationCityName;
         }
 
         public void SpeedUp(byte minSpeed = 1, byte maxSpeed = 5) =>
@@ -32,13 +37,15 @@ namespace MerchantGame.Entities
         
         public void Ride() => DistanceLeft -= CartSpeed;
 
-        public void BuyGood(Good good) => GoodsInCart.Add(good);
-
         public void SpeedUpAndRide(byte minSpeed = 1, byte maxSpeed = 5)
         {
             SpeedUp(minSpeed, maxSpeed);
             Ride();
         }
+
+        public void BuyGood(Good good) => GoodsInCart.Add(good);
+
+        
 
         
 
