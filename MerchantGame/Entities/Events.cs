@@ -95,10 +95,10 @@ namespace MerchantGame.Entities
                     Player.SellGood();
                     break;
                 case "Exchange":
-                    Player.ExchangeGood(Shop.GetGoodForCustomerNeeds());
+                    Player.ExchangeGood(ChooseGoodForPlayer());
                     break;
                 case "Buy":
-                    Player.BuyGood(Shop.GetGoodForCustomerNeeds());
+                    Player.BuyGood(ChooseGoodForPlayer());
                     break;
             }
         }
@@ -134,6 +134,9 @@ namespace MerchantGame.Entities
             
             return Output;
         }
+
+        public Good ChooseGoodForPlayer() =>
+            Shop.GetGoodForCustomerNeeds(Player.Money, Player.CartCapacity - Player.CartCapacity);
 
 
     }

@@ -22,6 +22,17 @@ namespace MerchantGame.Entities
         const int CartCapacitySetting = 2000;
         const int MaximumMoney = 5000;
 
+        public Merchant(string name = "Player 1")
+        {
+            Name = name;
+            CartCapacity = CartCapacitySetting;
+            CarryingWeight = 0;
+            Money = Random.Shared.Next(MaximumMoney);
+            GoodsInCart = new List<Good>();
+            DistanceLeft = 0;
+            DestinationCityName = "";
+            DaysOnTheRoad = 0;
+        }
         public Merchant(string name, 
                         byte distanceLeft,
                         string destinationCityName)

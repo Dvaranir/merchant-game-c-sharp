@@ -12,17 +12,23 @@ namespace MerchantGame.Entities
         public int MinWeight { get; set; }
         public List<Good> AllGoods { get; set; }
         public int AllGoodsCount { get; set; }
-        private Merchant Player { get; set; }
 
         const int MaxRequiredGoods = 3;
+        readonly string[] GoodsNames = new string[] { "Meat", "Fruits", "Paint", "Flour", "Seeds", "Cloth" };
 
-        public Shop (List<Good> goods, Merchant player)
+        public Shop (List<Good> goods)
         {
-            AllGoods = goods.OrderBy(good => good.Price).ToList();
+            AllGoods = GenerateGoods().OrderBy(good => good.Price).ToList();
             MinPrice = AllGoods.MinBy(good => good.Price)!.Price;
             MinWeight = AllGoods.MinBy(good => good.Weight)!.Weight;
             AllGoodsCount = AllGoods.Count();
-            Player = player;
+        }
+
+        private List<Good> GenerateGoods()
+        {
+            List<Good> goods = new();
+            Array.ForEach(GoodsNames, name => goods.Add(new Good(name)));
+            return goods;
         }
 
         public List<string> GenerateRequiredGoods()
@@ -54,19 +60,18 @@ namespace MerchantGame.Entities
         public Good GenerateRandomGood(List<Good> goods) =>
             goods[Random.Shared.Next(1, AllGoodsCount - 1)];
 
-        public Good GetGoodForCustomerNeeds() =>
-            GenerateRandomGood(ChooseGoodsForCustomerNeeds()) ;
-
         public Good? GetLowestPriceGood() =>
             AllGoods.MinBy(good => good.Price);
         
         public Good? GetLowestWeightGood() =>
             AllGoods.MinBy(good => good.Weight);
 
-        public List <Good> ChooseGoodsForCustomerNeeds() =>
+        public List <Good> ChooseGoodsForCustomerNeeds(double money, int spaceLeft) =>
             AllGoods.FindAll(good =>
-            good.Price <= Player.Money &
-            good.Weight <= Player.CartCapacity - Player.CarryingWeight);
-        
+            good.Price <= money &
+            good.Weight <= spaceLeft);
+
+        public Good GetGoodForCustomerNeeds(double money, int spaceLeft) =>
+            GenerateRandomGood(ChooseGoodsForCustomerNeeds(money, spaceLeft));
     }
 }
