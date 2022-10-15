@@ -12,17 +12,19 @@ namespace MerchantGame.Entities
         public int MinWeight { get; set; }
         public List<Good> AllGoods { get; set; }
         public int AllGoodsCount { get; set; }
+        private Merchant Player { get; set; }
 
         const int MaxRequiredGoods = 3;
 
-        public Shop (List<Good> goods)
+        public Shop (List<Good> goods, Merchant player)
         {
-            AllGoods = goods;
-            MinPrice = goods.MinBy(good => good.Price)!.Price;
-            MinWeight = goods.MinBy(good => good.Weight)!.Weight;
-            AllGoodsCount = goods.Count();
+            AllGoods = goods.OrderBy(good => good.Price).ToList();
+            MinPrice = AllGoods.MinBy(good => good.Price)!.Price;
+            MinWeight = AllGoods.MinBy(good => good.Weight)!.Weight;
+            AllGoodsCount = AllGoods.Count();
+            Player = player;
         }
-        
+
         public List<string> GenerateRequiredGoods()
         {
             List<string> RequiredGoods = new();
@@ -48,5 +50,23 @@ namespace MerchantGame.Entities
 
         public Good GenerateRandomGood() =>
             AllGoods[Random.Shared.Next(1, AllGoodsCount - 1)];
+
+        public Good GenerateRandomGood(List<Good> goods) =>
+            goods[Random.Shared.Next(1, AllGoodsCount - 1)];
+
+        public Good GetGoodForCustomerNeeds() =>
+            GenerateRandomGood(ChooseGoodsForCustomerNeeds()) ;
+
+        public Good? GetLowestPriceGood() =>
+            AllGoods.MinBy(good => good.Price);
+        
+        public Good? GetLowestWeightGood() =>
+            AllGoods.MinBy(good => good.Weight);
+
+        public List <Good> ChooseGoodsForCustomerNeeds() =>
+            AllGoods.FindAll(good =>
+            good.Price <= Player.Money &
+            good.Weight <= Player.CartCapacity - Player.CarryingWeight);
+        
     }
 }

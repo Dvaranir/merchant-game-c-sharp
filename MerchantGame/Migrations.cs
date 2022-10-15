@@ -64,7 +64,7 @@ namespace MerchantGame
 
             StringBuilder stringBuilder = new(InsertString);
 
-            foreach (T data in Data)
+            foreach ( T data in Data)
             {
                 stringBuilder.Append('(');
                 foreach (var property in data.GetType().GetProperties())
