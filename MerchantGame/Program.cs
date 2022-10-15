@@ -4,10 +4,17 @@ using MerchantGame;
 using MerchantGame.Entities;
 using MerchantGame.Models;
 
+string CurrentDirectory = Path.Combine(Directory.GetCurrentDirectory());
+string DatabaseFilePath = $"{CurrentDirectory}/merchant.db";
+bool DatabaseExist = File.Exists(DatabaseFilePath);
 
-Migrations migrations = new Migrations();
+if (!DatabaseExist)
+{
+    Migrations Migrations = new();
+    Migrations.Migrate();
+}
 
-migrations.Migrate();
+
 Merchant Player = new();
 List<Good> Goods = GoodsModel.GetAllGoods();
 Shop shop = new(Goods);
