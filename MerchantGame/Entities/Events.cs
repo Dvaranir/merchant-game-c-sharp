@@ -13,8 +13,8 @@ namespace MerchantGame.Entities
         public Merchant Player { get; set; }
         public Shop Shop { get; set; }
 
-        const int MaxGoodsToSteal = 5;
-        const int NightInTavernPrice = 50;
+        readonly int MaxGoodsToSteal = Settings.EventsMaxGoodsToSteal;
+        readonly int NightInTavernPrice = Settings.EventsNightInTavernPrice;
 
         public Events(Merchant player, Shop shop)
         {

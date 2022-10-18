@@ -28,7 +28,6 @@ namespace MerchantGame
         const string TableGoodsInCart =
             "CREATE TABLE IF NOT EXISTS goods_in_cart (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(20), quality REAL, weight INTEGER, normal_quality_price INTEGER);";
 
-        readonly string[] GoodsNames = new string[] { "Meat", "Fruits", "Paint", "Flour", "Seeds", "Cloth" };
         readonly string[] CitiesNames = new string[] { "New York", "Almaty", "Toronto", "Berlin", "Paris", "London", "Sydney" };
 
         public Migrations() {
@@ -104,7 +103,7 @@ namespace MerchantGame
         }
 
         private void GenerateGoods() =>
-               Array.ForEach(GoodsNames, name => Goods.Add(new Good(name)));
+               Array.ForEach(Settings.GetGoodsNames(), name => Goods.Add(new Good(name)));
 
         private void GenerateCities() 
         {

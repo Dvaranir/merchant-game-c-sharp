@@ -13,8 +13,7 @@ namespace MerchantGame.Entities
         public List<Good> AllGoods { get; set; }
         public int AllGoodsCount { get; set; }
 
-        const int MaxRequiredGoods = 3;
-        readonly string[] GoodsNames = new string[] { "Meat", "Fruits", "Paint", "Flour", "Seeds", "Cloth" };
+        readonly int MaxRequiredGoods = Settings.ShopCityMaxRequiredGoods;
 
         public Shop (List<Good> goods)
         {
@@ -27,6 +26,7 @@ namespace MerchantGame.Entities
         private List<Good> GenerateGoods()
         {
             List<Good> goods = new();
+            string[] GoodsNames = Settings.GetGoodsNames();
             Array.ForEach(GoodsNames, name => goods.Add(new Good(name)));
             return goods;
         }

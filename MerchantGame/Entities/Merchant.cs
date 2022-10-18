@@ -15,12 +15,13 @@ namespace MerchantGame.Entities
         public int CartCapacity { get; set; }
         public int CarryingWeight { get; set; }
         public List<Good> GoodsInCart { get; set; }
+        public string StartingCityName { get; set; }
         public string DestinationCityName { get; set; }
         public byte DistanceLeft { get; set; } 
         public byte DaysOnTheRoad { get; set; }
 
-        const int CartCapacitySetting = 2000;
-        const int MaximumMoney = 5000;
+        readonly int MaximumMoney = Settings.MerchantMaximumMoney;
+        readonly int CartCapacitySetting = Settings.MerchantCartCapacity;
 
         public Merchant(string name = "Player 1")
         {
@@ -30,11 +31,13 @@ namespace MerchantGame.Entities
             Money = Random.Shared.Next(MaximumMoney);
             GoodsInCart = new List<Good>();
             DistanceLeft = 0;
+            StartingCityName = "";
             DestinationCityName = "";
             DaysOnTheRoad = 0;
         }
         public Merchant(string name, 
                         byte distanceLeft,
+                        string startingCityName,
                         string destinationCityName)
         {
             Name = name;
@@ -43,6 +46,7 @@ namespace MerchantGame.Entities
             Money = Random.Shared.Next(MaximumMoney);
             GoodsInCart = new List<Good>();
             DistanceLeft = distanceLeft;
+            StartingCityName = startingCityName;
             DestinationCityName = destinationCityName;
             DaysOnTheRoad = 0;
         }
