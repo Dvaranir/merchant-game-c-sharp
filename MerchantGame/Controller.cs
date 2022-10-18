@@ -11,8 +11,6 @@ namespace MerchantGame
     internal class Controller
     {
         public List<City> Cities { get; set;}
-        public City StartingCity { get; set; }
-        public City DestinationCity { get; set; }
         public Events Events { get; set; }
         public Merchant Player { get; set; }
 
@@ -20,16 +18,16 @@ namespace MerchantGame
         {
             Cities = CitiesModel.GetAllCities();
             
-            StartingCity = ChooseRandomCity();
-            do { DestinationCity = ChooseRandomCity(); }
-            while (DestinationCity.Name == StartingCity.Name);
-            
             Events = events;
             Player = player;
         }
 
-        public City ChooseRandomCity() =>
-            Cities[Random.Shared.Next(0, Cities.Count - 1)];
+        
+
+        public string GetRandomCityName() =>
+            Cities[Random.Shared.Next(0, Cities.Count - 1)].Name;
+
+        
 
 
         

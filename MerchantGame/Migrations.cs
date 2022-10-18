@@ -39,6 +39,14 @@ namespace MerchantGame
             Shop = new(Goods);
             GenerateCities();
         }
+        public void CreateDatabaseIfNotExist()
+        {
+            string CurrentDirectory = Path.Combine(Directory.GetCurrentDirectory());
+            string DatabaseFilePath = $"{CurrentDirectory}/merchant.db";
+            bool DatabaseExist = File.Exists(DatabaseFilePath);
+
+            if (!DatabaseExist) Migrate();
+        }
 
         private void AddTables()
         {
