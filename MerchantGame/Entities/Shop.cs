@@ -15,15 +15,15 @@ namespace MerchantGame.Entities
 
         readonly int MaxRequiredGoods = Settings.ShopCityMaxRequiredGoods;
 
-        public Shop (List<Good> goods)
+        public Shop ()
         {
             AllGoods = GenerateGoods().OrderBy(good => good.Price).ToList();
             MinPrice = AllGoods.MinBy(good => good.Price)!.Price;
             MinWeight = AllGoods.MinBy(good => good.Weight)!.Weight;
-            AllGoodsCount = AllGoods.Count();
+            AllGoodsCount = AllGoods.Count;
         }
 
-        private List<Good> GenerateGoods()
+        private static List<Good> GenerateGoods()
         {
             List<Good> goods = new();
             string[] GoodsNames = Settings.GetGoodsNames();
@@ -48,7 +48,7 @@ namespace MerchantGame.Entities
                 RequiredGoods.Add(RandomGoodName);
                 RandomNumbersBlacklist.Add(RandomNumber);
 
-                if (RequiredGoods.Count() >= NumberOfRequiredGoods) break;
+                if (RequiredGoods.Count >= NumberOfRequiredGoods) break;
             } 
 
             return RequiredGoods;

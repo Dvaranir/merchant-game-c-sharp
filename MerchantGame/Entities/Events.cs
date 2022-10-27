@@ -12,14 +12,18 @@ namespace MerchantGame.Entities
     {
         public Merchant Player { get; set; }
         public Shop Shop { get; set; }
+        
+        Action[] AllEvents { get; set; }
 
         readonly int MaxGoodsToSteal = Settings.EventsMaxGoodsToSteal;
         readonly int NightInTavernPrice = Settings.EventsNightInTavernPrice;
+
 
         public Events(Merchant player, Shop shop)
         {
             Player = player;
             Shop = shop;
+            AllEvents = new Action[] {NormalDay};
         }
 
         public void NormalDay() => Player.SpeedUpAndRide();
@@ -80,11 +84,16 @@ namespace MerchantGame.Entities
 
             Player.PayForTavern(NightInTavernPrice);
 
+            string[] TypesOfTrade = GetPossibleTrades();
+            if (TypesOfTrade.Length == 1)
+            {
+                Console.WriteLine("Looks like you can't trade");
+                return;
+            }
+
             Console.WriteLine("Will you trade here?\n1 - Yes, I will trade\n2 - No, I won't");
             Trade = GetInputFromUser();
             if (Trade == No) return;
-
-            string[] TypesOfTrade = {"Buy", "Sell", "Exchange"};
 
             int TypeOfTradeIndex = Random.Shared.Next(TypesOfTrade.Length - 1);
             string RandomTypeOfTrade = TypesOfTrade[TypeOfTradeIndex];
@@ -99,6 +108,8 @@ namespace MerchantGame.Entities
                     break;
                 case "Buy":
                     Player.BuyGood(ChooseGoodForPlayer());
+                    break;
+                default:
                     break;
             }
         }
@@ -116,7 +127,7 @@ namespace MerchantGame.Entities
             else return new string[] { "No trades for you" };
         }
 
-        public byte GetInputFromUser()
+        public static byte GetInputFromUser()
         {
             byte Output;
             while (true)
@@ -137,6 +148,8 @@ namespace MerchantGame.Entities
 
         public Good ChooseGoodForPlayer() =>
             Shop.GetGoodForCustomerNeeds(Player.Money, Player.CartCapacity - Player.CartCapacity);
+
+        //public voild RunRandomEvent =>
 
 
     }
