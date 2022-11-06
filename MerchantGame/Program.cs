@@ -4,13 +4,11 @@ using MerchantGame;
 using MerchantGame.Entities;
 using MerchantGame.Models;
 
-Migrations Migrations = new Migrations();
-Migrations.CreateDatabaseIfNotExist();
+Controller Controller = new();
+
+Controller.StartNewGame();
 
 
-Merchant Player = new();
-List<Good> Goods = GoodsModel.GetAllGoods();
-Shop shop = new(Goods);
-shop.GenerateRequiredGoods();
+
 
 

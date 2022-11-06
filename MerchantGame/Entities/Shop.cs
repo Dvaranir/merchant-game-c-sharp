@@ -55,16 +55,16 @@ namespace MerchantGame.Entities
         }
 
         public Good GenerateRandomGood() =>
-            AllGoods[Random.Shared.Next(1, AllGoodsCount - 1)];
+            AllGoods[Random.Shared.Next(0, AllGoodsCount - 1)];
 
         public Good GenerateRandomGood(List<Good> goods) =>
-            goods[Random.Shared.Next(1, AllGoodsCount - 1)];
+            AllGoods[Random.Shared.Next(0, AllGoodsCount - 1)];
 
-        public Good? GetLowestPriceGood() =>
-            AllGoods.MinBy(good => good.Price);
+        public int GetGoodLowestPrice() =>
+            AllGoods.MinBy(good => good!.Price)!.Price;
         
-        public Good? GetLowestWeightGood() =>
-            AllGoods.MinBy(good => good.Weight);
+        public int GetGoodLowestWeight() =>
+            AllGoods.MinBy(good => good!.Weight)!.Weight;
 
         public List <Good> ChooseGoodsForCustomerNeeds(double money, int spaceLeft) =>
             AllGoods.FindAll(good =>

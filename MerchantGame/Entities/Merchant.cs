@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace MerchantGame.Entities
 {
+
     internal class Merchant
     {
         public string Name { get; set; }
@@ -17,25 +18,25 @@ namespace MerchantGame.Entities
         public List<Good> GoodsInCart { get; set; }
         public string StartingCityName { get; set; }
         public string DestinationCityName { get; set; }
-        public byte DistanceLeft { get; set; } 
-        public byte DaysOnTheRoad { get; set; }
+        public int DistanceLeft { get; set; }
+        public int DaysOnTheRoad { get; set; }
 
         readonly int MaximumMoney = Settings.MerchantMaximumMoney;
         readonly int CartCapacitySetting = Settings.MerchantCartCapacity;
 
-        public Merchant(string name = "Player 1")
+        public Merchant(string startingCityName, City destinationCity, string name = "Player 1")
         {
             Name = name;
             CartCapacity = CartCapacitySetting;
             CarryingWeight = 0;
             Money = Random.Shared.Next(MaximumMoney);
             GoodsInCart = new List<Good>();
-            DistanceLeft = 0;
-            StartingCityName = "";
-            DestinationCityName = "";
+            StartingCityName = startingCityName;
+            DestinationCityName = destinationCity.Name;
+            DistanceLeft = destinationCity.Distance;
             DaysOnTheRoad = 0;
         }
-        public Merchant(string name, 
+        public Merchant(string name,
                         byte distanceLeft,
                         string startingCityName,
                         string destinationCityName)
@@ -51,14 +52,18 @@ namespace MerchantGame.Entities
             DaysOnTheRoad = 0;
         }
 
+        
+
         public void SpeedUp(byte minSpeed = 1, byte maxSpeed = 5) =>
-            CartSpeed = (byte) Random.Shared.Next(minSpeed, maxSpeed);
+            CartSpeed = (byte)Random.Shared.Next(minSpeed, maxSpeed);
 
         public void Ride()
         {
             DistanceLeft -= CartSpeed;
             DaysOnTheRoad++;
         }
+
+        public void Stay() => DaysOnTheRoad++;
 
         public void SpeedUpAndRide(byte minSpeed = 1, byte maxSpeed = 5)
         {
@@ -68,20 +73,38 @@ namespace MerchantGame.Entities
 
         public int SelectRandomGoodInCart() =>
             Random.Shared.Next(GoodsInCart.Count - 1);
-        
 
-        public void BuyGood(Good good) => GoodsInCart.Add(good);
 
-        public void SellGood(int goodIndex = 0, int sellModifier = 1)
+        public void BuyGood(Good good) 
         {
-            if (GoodsInCart.Count <= 0) return;
-            Good GoodToSell = GoodsInCart[goodIndex];
-            Money += (GoodToSell.Price * GoodToSell.Quality) * sellModifier;
-            GoodsInCart.RemoveAt(goodIndex);
+            GoodsInCart.Add(good);
+            Money -= good.Price;
         }
 
-        public void ExchangeGood(Good newGood, int indexOfGood = 0) =>
+        public GoodNameAndPrice SellGood(int goodIndex = 0, int sellModifier = 1)
+        {
+            GoodNameAndPrice NameAndPrice;
+            if (GoodsInCart.Count <= 0) return new GoodNameAndPrice();
+
+            Good GoodToSell = GoodsInCart[goodIndex];
+            NameAndPrice.Name = GoodToSell.Name;
+
+            float SellPrice = (GoodToSell.Price * GoodToSell.Quality) * sellModifier;
+            NameAndPrice.Price = SellPrice;
+
+            Money += SellPrice;
+            GoodsInCart.RemoveAt(goodIndex);
+
+            return NameAndPrice;
+        }
+
+        public string ExchangeGood(Good newGood, int indexOfGood = 0) 
+        {
+            string ExchangedGoodName = GoodsInCart[indexOfGood].Name;
             GoodsInCart[indexOfGood] = newGood;
+            return ExchangedGoodName;
+        }
+            
         
 
         public void GiveAwayBestGood()
@@ -99,9 +122,6 @@ namespace MerchantGame.Entities
             else GiveAwayBestGood();
         }
 
-        
-
-        
-
     }
+    
 }

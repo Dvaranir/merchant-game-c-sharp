@@ -84,4 +84,10 @@ namespace MerchantGame.Entities
             }
         }
     }
+
+    public struct GoodNameAndPrice
+    {
+        public string Name;
+        public float Price;
+    }
 }

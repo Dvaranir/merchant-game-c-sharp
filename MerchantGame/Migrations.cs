@@ -35,7 +35,7 @@ namespace MerchantGame
             Goods = new();
             Cities = new();
             GenerateGoods();
-            Shop = new(Goods);
+            Shop = new();
             GenerateCities();
         }
         public void CreateDatabaseIfNotExist()
