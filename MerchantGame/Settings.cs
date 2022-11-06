@@ -25,6 +25,7 @@ namespace MerchantGame
         public const int EventsNightInTavernPrice = 50;
 
         public const int ShopCityMaxRequiredGoods = 3;
+        public const int CityRequiredGoodsPriceModifier = 2;
 
 
         public enum GoodsNames { Meat, Fruits, Paint, Flour, Seeds, Cloth };

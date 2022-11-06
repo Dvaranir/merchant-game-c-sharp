@@ -16,25 +16,27 @@ namespace MerchantGame
         public Shop Shop { get; set; }
         public Events Events { get; set; }
         public Migrations Migrations { get; set; }
+        public City DestinationCity { get; set; }
 
         public Controller ()
         {
             Cities = CitiesModel.GetAllCities();
-            Player = new(GetRandomCityName(), GetRandomCity());
+            DestinationCity = GetRandomCity();
+            Player = new(GetRandomCityName(), DestinationCity);
             Shop = new();
             Events = new(Player, Shop);
             Migrations = new();
         }
 
 
-        public void StartNewGame()
+        public void StartGame()
         {
             Migrations.CreateDatabaseIfNotExist();
 
             InitialPurchase();
             MainLoop();
-            Console.WriteLine("Finished");
-            
+            SellAllGoods();
+            EndGameStatistic();
         }
 
         public void ContinueGame()
@@ -51,7 +53,7 @@ namespace MerchantGame
             {
                 Good RandomGood = Events.ChooseGoodForPlayer();
                 Player.BuyGood(Events.ChooseGoodForPlayer());
-                Console.WriteLine($"{Player.Name} bought {RandomGood.Name}");
+                Console.WriteLine($"{Player.Name} bought {RandomGood.Name} for {RandomGood.Price}$");
                 int SpaceInCartLeft = Player.CartCapacity - Player.CarryingWeight;
 
                 if (Player.Money < LowestPrice ||
@@ -71,6 +73,38 @@ namespace MerchantGame
                     break;
                 }
             }
+        }
+
+        public void SellAllGoods()
+        {
+            byte FirstProductInCart = 0;
+            while (true)
+            {
+                if (Player.GoodsInCart.Count == 0) break;
+
+                string GoodName = Player.GoodsInCart[0].Name;
+                if (DestinationCity.RequiredGoods.Contains(GoodName))
+                    Player.SellGood(FirstProductInCart, Settings.CityRequiredGoodsPriceModifier);
+                
+                else Player.SellGood();
+            }
+        }
+
+        public void EndGameStatistic()
+        {
+            double StartingMoney = Player.StartingMoney;
+            double Money = Player.Money;
+
+            Console.WriteLine($"{Player.Name} passed {Player.DistanceTraveled}km");
+            Console.WriteLine($"{Player.Name} have {(int) Player.StartingMoney}$ at start");
+            Console.WriteLine($"{Player.Name} have {(int) Player.Money}$ now");
+            if (StartingMoney < Money)
+                Console.WriteLine($"{Player.Name} earned {(int) (Player.Money - Player.StartingMoney)}");
+            else
+                Console.WriteLine($"{Player.Name} earned nothing");
+
+
+
         }
 
         public City GetRandomCity() =>

@@ -98,11 +98,11 @@ namespace MerchantGame.Entities
 
             if (Player.Money > 100) { 
                 TakeMoney();
-                EventAddition = "Meet some bastards, they took my money!";
+                EventAddition = "Met some bastards, they took my money!";
             }
             else { 
                 TakeGoods();
-                EventAddition = "Meet some bastards, they took some of my goods!";
+                EventAddition = "Met some bastards, they took some of my goods!";
             }
             Player.SpeedUpAndRide();
 
@@ -154,7 +154,7 @@ namespace MerchantGame.Entities
             Trade = GetInputFromUser();
             if (Trade == No) return;
 
-            int TypeOfTradeIndex = Random.Shared.Next(TypesOfTrade.Length - 1);
+            int TypeOfTradeIndex = Random.Shared.Next(TypesOfTrade.Length);
             string RandomTypeOfTrade = TypesOfTrade[TypeOfTradeIndex];
 
             Good GoodForPlayer;
@@ -168,9 +168,9 @@ namespace MerchantGame.Entities
 
                 case "Exchange":
                     GoodForPlayer = ChooseGoodForPlayer();
-                    string GoodForPlayerName = GoodForPlayer.Name;
+                    string GoodName = GoodForPlayer.Name;
                     string ExchangedGoodName = Player.ExchangeGood(GoodForPlayer);
-                    Console.WriteLine($"{Player.Name} exchanged {ExchangedGoodName} on {GoodForPlayerName}");
+                    Console.WriteLine($"{Player.Name} exchanged {ExchangedGoodName} on {GoodName}");
                     break;
 
                 case "Buy":
