@@ -14,13 +14,13 @@ namespace MerchantGame.Entities
         public byte Weight { get; set; }
         public int Price { get; set; }
 
-        const int GoodMaxWeight = 10;
-        const int GoodMinWeight = 1;
+        readonly int GoodMaxWeight = Settings.GoodMaxWeight;
+        readonly int GoodMinWeight = Settings.GoodMinWeight;
 
-        const int GoodMaxPrice = 200;
-        const int GoodMinPrice = 10;
+        readonly int GoodMaxPrice = Settings.GoodMaxPrice;
+        readonly int GoodMinPrice = Settings.GoodMinPrice;
 
-        const float NormalQuality = 1.2f;
+        readonly float NormalQuality = Settings.GoodNormalQuality;
 
         public Good(string name)
         {
@@ -83,5 +83,11 @@ namespace MerchantGame.Entities
                     break;
             }
         }
+    }
+
+    public struct GoodNameAndPrice
+    {
+        public string Name;
+        public float Price;
     }
 }

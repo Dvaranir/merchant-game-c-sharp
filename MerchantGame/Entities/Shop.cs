@@ -12,17 +12,23 @@ namespace MerchantGame.Entities
         public int MinWeight { get; set; }
         public List<Good> AllGoods { get; set; }
         public int AllGoodsCount { get; set; }
-        private Merchant Player { get; set; }
 
-        const int MaxRequiredGoods = 3;
+        readonly int MaxRequiredGoods = Settings.ShopCityMaxRequiredGoods;
 
-        public Shop (List<Good> goods, Merchant player)
+        public Shop ()
         {
-            AllGoods = goods.OrderBy(good => good.Price).ToList();
+            AllGoods = GenerateGoods().OrderBy(good => good.Price).ToList();
             MinPrice = AllGoods.MinBy(good => good.Price)!.Price;
             MinWeight = AllGoods.MinBy(good => good.Weight)!.Weight;
-            AllGoodsCount = AllGoods.Count();
-            Player = player;
+            AllGoodsCount = AllGoods.Count;
+        }
+
+        private static List<Good> GenerateGoods()
+        {
+            List<Good> goods = new();
+            string[] GoodsNames = Settings.GetGoodsNames();
+            Array.ForEach(GoodsNames, name => goods.Add(new Good(name)));
+            return goods;
         }
 
         public List<string> GenerateRequiredGoods()
@@ -42,31 +48,30 @@ namespace MerchantGame.Entities
                 RequiredGoods.Add(RandomGoodName);
                 RandomNumbersBlacklist.Add(RandomNumber);
 
-                if (RequiredGoods.Count() >= NumberOfRequiredGoods) break;
+                if (RequiredGoods.Count >= NumberOfRequiredGoods) break;
             } 
 
             return RequiredGoods;
         }
 
         public Good GenerateRandomGood() =>
-            AllGoods[Random.Shared.Next(1, AllGoodsCount - 1)];
+            AllGoods[Random.Shared.Next(0, AllGoodsCount - 1)];
 
         public Good GenerateRandomGood(List<Good> goods) =>
-            goods[Random.Shared.Next(1, AllGoodsCount - 1)];
+            AllGoods[Random.Shared.Next(0, AllGoodsCount - 1)];
 
-        public Good GetGoodForCustomerNeeds() =>
-            GenerateRandomGood(ChooseGoodsForCustomerNeeds()) ;
-
-        public Good? GetLowestPriceGood() =>
-            AllGoods.MinBy(good => good.Price);
+        public int GetGoodLowestPrice() =>
+            AllGoods.MinBy(good => good!.Price)!.Price;
         
-        public Good? GetLowestWeightGood() =>
-            AllGoods.MinBy(good => good.Weight);
+        public int GetGoodLowestWeight() =>
+            AllGoods.MinBy(good => good!.Weight)!.Weight;
 
-        public List <Good> ChooseGoodsForCustomerNeeds() =>
+        public List <Good> ChooseGoodsForCustomerNeeds(double money, int spaceLeft) =>
             AllGoods.FindAll(good =>
-            good.Price <= Player.Money &
-            good.Weight <= Player.CartCapacity - Player.CarryingWeight);
-        
+            good.Price <= money &
+            good.Weight <= spaceLeft);
+
+        public Good GetGoodForCustomerNeeds(double money, int spaceLeft) =>
+            GenerateRandomGood(ChooseGoodsForCustomerNeeds(money, spaceLeft));
     }
 }

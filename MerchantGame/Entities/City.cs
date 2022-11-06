@@ -13,8 +13,8 @@ namespace MerchantGame.Entities
         public byte Distance { get; set; }
         public List<string> RequiredGoods { get; set; }
 
-        const int MaxDistance = 101;
-        const int MinDistance = 50;
+        readonly int MaxDistance = Settings.CityMaxDistance;
+        readonly int MinDistance = Settings.CityMinDistance;
 
         public City(string name, List<string> requiredGoods)
         {
