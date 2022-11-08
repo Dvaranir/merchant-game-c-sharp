@@ -14,6 +14,7 @@ namespace MerchantGame
 
         public const int CityMaxDistance = 101;
         public const int CityMinDistance = 50;
+        public const int CityRequiredGoodsModifier = 2;
 
         public const int GoodMaxWeight = 10;
         public const int GoodMinWeight = 1;
@@ -27,9 +28,7 @@ namespace MerchantGame
         public const int ShopCityMaxRequiredGoods = 3;
         public const int CityRequiredGoodsPriceModifier = 2;
 
-
         public enum GoodsNames { Meat, Fruits, Paint, Flour, Seeds, Cloth };
-
         public static string[] GetGoodsNames() =>
             Enum.GetNames(typeof(GoodsNames));
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -73,5 +75,27 @@ namespace MerchantGame.Entities
 
         public Good GetGoodForCustomerNeeds(double money, int spaceLeft) =>
             GenerateRandomGood(ChooseGoodsForCustomerNeeds(money, spaceLeft));
+
+        public int CalculatePossibleProfit(Merchant player) =>
+            player.GoodsInCart.Aggregate(0, (acc, good) => 
+                (int) (acc + good.Price * good.Quality));
+
+        public int CalculatePossibleProfit(Merchant player, City city)
+        {
+            int PossibleProfit = player.GoodsInCart.Aggregate(0, CheckForRequired);
+
+            return PossibleProfit;
+
+            int CheckForRequired(int acc, Good good)
+            {
+                int Modifier = Settings.CityRequiredGoodsModifier;
+                if (city.RequiredGoods.Contains(good.Name))
+                    return (int)(acc + (good.Price * good.Quality) * Modifier);
+                else 
+                    return (int)(acc + good.Price * good.Quality);
+            }
+        }
+            
+        
     }
 }

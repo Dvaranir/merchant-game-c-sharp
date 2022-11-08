@@ -11,7 +11,7 @@ namespace MerchantGame
 {
     internal class Controller
     {
-        public List<City> Cities { get; set;}
+        public City[] Cities { get; set;}
         public Merchant Player { get; set; }
         public Shop Shop { get; set; }
         public Events Events { get; set; }
@@ -24,7 +24,7 @@ namespace MerchantGame
             DestinationCity = GetRandomCity();
             Player = new(GetRandomCityName(), DestinationCity);
             Shop = new();
-            Events = new(Player, Shop);
+            Events = new(Player, Shop, Cities.ToArray());
             Migrations = new();
         }
 
@@ -99,19 +99,16 @@ namespace MerchantGame
             Console.WriteLine($"{Player.Name} have {(int) Player.StartingMoney}$ at start");
             Console.WriteLine($"{Player.Name} have {(int) Player.Money}$ now");
             if (StartingMoney < Money)
-                Console.WriteLine($"{Player.Name} earned {(int) (Player.Money - Player.StartingMoney)}");
+                Console.WriteLine($"{Player.Name} earned {(int) (Player.Money - Player.StartingMoney)}$");
             else
                 Console.WriteLine($"{Player.Name} earned nothing");
-
-
-
         }
 
         public City GetRandomCity() =>
-            Cities[Random.Shared.Next(0, Cities.Count - 1)];
+            Cities[Random.Shared.Next(0, Cities.Length - 1)];
 
         public string GetRandomCityName() =>
-            Cities[Random.Shared.Next(0, Cities.Count - 1)].Name;
+            Cities[Random.Shared.Next(0, Cities.Length - 1)].Name;
         
     }
 }

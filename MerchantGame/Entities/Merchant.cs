@@ -18,10 +18,11 @@ namespace MerchantGame.Entities
         public int CarryingWeight { get; set; }
         public List<Good> GoodsInCart { get; set; }
         public string StartingCityName { get; set; }
-        public string DestinationCityName { get; set; }
+        public City DestinationCity { get; set; }
         public int DistanceLeft { get; set; }
         public int DistanceTraveled { get; set; }
         public int DaysOnTheRoad { get; set; }
+        public bool GossipsEventAppeared { get; set; }
 
         readonly int MaximumMoney = Settings.MerchantMaximumMoney;
         readonly int CartCapacitySetting = Settings.MerchantCartCapacity;
@@ -37,18 +38,20 @@ namespace MerchantGame.Entities
             StartingMoney = Money;
             GoodsInCart = new List<Good>();
             StartingCityName = startingCityName;
-            DestinationCityName = destinationCity.Name;
+            DestinationCity = destinationCity;
             DistanceLeft = destinationCity.Distance;
             DistanceTraveled = 0;
             DaysOnTheRoad = 0;
+            GossipsEventAppeared = false;
         }
 
         public Merchant(string name,
                         byte distanceLeft,
                         string startingCityName,
-                        string destinationCityName,
+                        City destinationCity,
                         double startingMoney,
-                        int distanceTraveled)
+                        int distanceTraveled,
+                        byte gossipsEventAppeared)
         {
             Name = name;
             CartCapacity = CartCapacitySetting;
@@ -59,8 +62,9 @@ namespace MerchantGame.Entities
             DistanceLeft = distanceLeft;
             DistanceTraveled = distanceTraveled;
             StartingCityName = startingCityName;
-            DestinationCityName = destinationCityName;
+            DestinationCity = destinationCity;
             DaysOnTheRoad = 0;
+            GossipsEventAppeared = Convert.ToBoolean(gossipsEventAppeared);
         }
 
         public void SpeedUp(byte minSpeed = 1, byte maxSpeed = 5) =>
@@ -128,6 +132,17 @@ namespace MerchantGame.Entities
         {
             if (Money >= overnightCost) Money -= overnightCost;
             else GiveAwayBestGood();
+        }
+
+        public void ChangeDestinationCity(City city)
+        {
+            int PartOfDistanceTraveled = 4;
+            float PartOfNewDistance = 0.66f;
+
+            DestinationCity = city;
+            DistanceLeft = (int)
+                (DistanceTraveled / PartOfDistanceTraveled + 
+                 city.Distance * PartOfNewDistance);
         }
 
     }

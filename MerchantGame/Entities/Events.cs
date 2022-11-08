@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -12,21 +13,25 @@ namespace MerchantGame.Entities
     {
         public Merchant Player { get; set; }
         public Shop Shop { get; set; }
-
+        public City[] AllCities { get; set; }
+      
         Action[] AllEvents { get; set; }
 
         readonly int MaxGoodsToSteal = Settings.EventsMaxGoodsToSteal;
         readonly int NightInTavernPrice = Settings.EventsNightInTavernPrice;
+        
+        const byte No = 2;
 
-
-        public Events(Merchant player, Shop shop)
+        public Events(Merchant player, Shop shop, City[] allCities)
         {
             Player = player;
             Shop = shop;
+            AllCities = allCities;
             AllEvents =
             new Action[] {
                 NormalDay, SmoothRoad, CartIsBroken,
-                River, MeetLocal, RoguesAttack, RoadsideTavern
+                River, MeetLocal, RoguesAttack, 
+                RoadsideTavern
             };
         }
 
@@ -124,25 +129,37 @@ namespace MerchantGame.Entities
 
         public void RoadsideTavern()
         {
-            byte Stay, Trade;
-            const byte No = 2;
+            bool WillGossipsAppear = Random.Shared.Next(100) >= 50;
+            StayInTavern();
+            TradeInTavern();
+            if (!Player.GossipsEventAppeared && WillGossipsAppear) HearGossips();
+        }
+
+        public void StayInTavern()
+        {
+            byte Stay;
+
             const int TavernAnnouncementDayModifier = 1;
 
-            
+
             string EventAddition = "You saw Roadside Tavern, will you stay here?\n1 - Yes, I will stay\n2 - No, I won't";
             DayAnnouncement(EventAddition, TavernAnnouncementDayModifier);
 
             Stay = GetInputFromUser();
 
-            if (Stay == No) 
+            if (Stay == No)
             {
                 Player.SpeedUpAndRide();
-                return; 
+                return;
             }
 
             Player.PayForTavern(NightInTavernPrice);
             Player.Stay();
+        }
 
+        public void TradeInTavern()
+        {
+            byte Trade;
             string[] TypesOfTrade = GetPossibleTrades();
             if (TypesOfTrade.Length == 1)
             {
@@ -184,6 +201,29 @@ namespace MerchantGame.Entities
             }
         }
 
+        public void HearGossips()
+        {
+            Player.GossipsEventAppeared = true;
+            Console.WriteLine("Your heared gossip in tavern.");
+            City RandomCity = AllCities[Random.Shared.Next(AllCities.Length)];
+            string CityRequiredGoods = string.Join(", ", RandomCity.RequiredGoods);
+            Console.WriteLine($"People says that {RandomCity.Name} in need of {CityRequiredGoods}");
+            
+            int PossibleProfitInCurrentCity = Shop.CalculatePossibleProfit(Player);
+            int PossibleProfitInNewCity = Shop.CalculatePossibleProfit(Player, RandomCity);
+
+            Console.WriteLine($"Now you are moving to {Player.DestinationCity.Name} will possibly earn {PossibleProfitInCurrentCity}$");
+            Console.WriteLine($"But in {RandomCity.Name} possible earn may be {PossibleProfitInNewCity}$");
+
+            Console.WriteLine($"Would you like to change destination city?\n1 - Yes, I will move to new city\n2 - No, I'l stay on my way");
+
+            byte ChangeCity = GetInputFromUser();
+
+            if (ChangeCity == No) return;
+
+            Player.ChangeDestinationCity(RandomCity);
+            
+        }
         public string[] GetPossibleTrades()
         {
             int MinPrice = Shop.MinPrice;
@@ -218,6 +258,7 @@ namespace MerchantGame.Entities
 
         public void DayAnnouncement(string EventAddition) =>
             Console.WriteLine($"Day N{Player.DaysOnTheRoad} {EventAddition}");
+        
         public void DayAnnouncement(string EventAddition, int DayModifier) =>
             Console.WriteLine($"Day N{Player.DaysOnTheRoad + DayModifier} {EventAddition}");
 

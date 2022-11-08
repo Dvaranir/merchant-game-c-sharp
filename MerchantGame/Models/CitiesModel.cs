@@ -11,7 +11,7 @@ namespace MerchantGame.Models
     internal class CitiesModel : Model
     {
         public CitiesModel() {}
-        public static List<City> GetAllCities()
+        public static City[] GetAllCities()
         {
 
             List<City> OutputList = new List<City>();
@@ -38,7 +38,7 @@ namespace MerchantGame.Models
                 }
                 Connection.Close();
             }
-            return OutputList;
+            return OutputList.ToArray();
         }
 
     }
