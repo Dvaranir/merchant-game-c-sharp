@@ -89,6 +89,7 @@ namespace MerchantGame.Entities
             int CheckForRequired(int acc, Good good)
             {
                 int Modifier = Settings.CityRequiredGoodsModifier;
+
                 if (city.RequiredGoods.Contains(good.Name))
                     return (int)(acc + (good.Price * good.Quality) * Modifier);
                 else 

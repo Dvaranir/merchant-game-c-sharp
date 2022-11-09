@@ -20,11 +20,11 @@ namespace MerchantGame
         public Shop Shop { get; set; }
 
         const string TableMerchant =
-            "CREATE TABLE IF NOT EXISTS merchant (name VARCHAR(20) PRIMARY KEY, money INTEGER);";
+            "CREATE TABLE IF NOT EXISTS merchant (name VARCHAR(50) PRIMARY KEY, money INTEGER);";
         const string TableGoods =
-            "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(20) PRIMARY KEY, quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER);";
+            "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(50) PRIMARY KEY, quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER);";
         const string TableCities =
-            "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(20) PRIMARY KEY, distance INTEGER, required_goods TEXT);";
+            "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(50) PRIMARY KEY, distance INTEGER, required_goods TEXT);";
         const string TableGoodsInCart =
             "CREATE TABLE IF NOT EXISTS goods_in_cart (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(20), quality REAL, weight INTEGER, normal_quality_price INTEGER);";
 

@@ -17,22 +17,21 @@ namespace MerchantGame
         public Events Events { get; set; }
         public Migrations Migrations { get; set; }
         public City DestinationCity { get; set; }
-
+        
         public Controller ()
         {
+            Migrations = new();
+            Migrations.CreateDatabaseIfNotExist();
+
             Cities = CitiesModel.GetAllCities();
             DestinationCity = GetRandomCity();
             Player = new(GetRandomCityName(), DestinationCity);
             Shop = new();
             Events = new(Player, Shop, Cities.ToArray());
-            Migrations = new();
         }
-
 
         public void StartGame()
         {
-            Migrations.CreateDatabaseIfNotExist();
-
             InitialPurchase();
             MainLoop();
             SellAllGoods();
@@ -105,10 +104,10 @@ namespace MerchantGame
         }
 
         public City GetRandomCity() =>
-            Cities[Random.Shared.Next(0, Cities.Length - 1)];
+            Cities[Random.Shared.Next(0, Cities.Length)];
 
         public string GetRandomCityName() =>
-            Cities[Random.Shared.Next(0, Cities.Length - 1)].Name;
+            Cities[Random.Shared.Next(0, Cities.Length)].Name;
         
     }
 }

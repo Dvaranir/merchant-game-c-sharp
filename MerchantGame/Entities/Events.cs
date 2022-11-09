@@ -237,7 +237,7 @@ namespace MerchantGame.Entities
             else return new string[] { "No trades for you" };
         }
 
-        public static byte GetInputFromUser()
+        public static byte GetInputFromUser(byte maxValue = 2)
         {
             byte Output;
             while (true)
@@ -245,11 +245,12 @@ namespace MerchantGame.Entities
                 try
                 {
                     Output = byte.Parse(Console.ReadLine());
-                    if (Output == 1 || Output == 2) break;
+                    if (Output > maxValue || Output < 0) throw new Exception();
+                    break;
                 }
                 catch
                 {
-                    Console.WriteLine("Wrong answer, please type 1 or 2");
+                    Console.WriteLine($"Wrong input, please type a number in range from 1 to {maxValue}");
                 }
             }
             

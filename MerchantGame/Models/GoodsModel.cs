@@ -40,5 +40,33 @@ namespace MerchantGame.Models
             }
             return OutputList;
         }
+
+        public static void Update(string name) 
+        {
+            string Request = "SELECT * FROM goods";
+
+            using (SqliteConnection Connection = new SqliteConnection(ConnectionString))
+            {
+                Connection.Open();
+
+                using (SqliteCommand Command = Connection.CreateCommand())
+                {
+                    Command.CommandText = Request;
+
+                    SqliteDataReader Reader = Command.ExecuteReader();
+
+                    while (Reader.Read())
+                    {
+                        string Name = Reader.GetString(0);
+                        float Quality = Reader.GetFloat(1);
+                        byte Weight = Reader.GetByte(2);
+                        int Price = Reader.GetInt32(3);
+
+
+                    }
+                }
+                Connection.Close();
+            }
+        }
     }
 }
