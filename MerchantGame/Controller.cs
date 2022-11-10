@@ -32,6 +32,7 @@ namespace MerchantGame
 
         public void StartGame()
         {
+            ChangePlayerStats();
             InitialPurchase();
             MainLoop();
             SellAllGoods();
@@ -108,6 +109,88 @@ namespace MerchantGame
 
         public string GetRandomCityName() =>
             Cities[Random.Shared.Next(0, Cities.Length)].Name;
-        
+
+        public void ChangePlayerStats()
+        {
+            Console.WriteLine("Write cart capacity:");
+            int CartCapacity = Events.GetIntegerInputFromUser();
+
+            Console.WriteLine("Write starting money:");
+            int StartingMoney = Events.GetIntegerInputFromUser();
+
+
+            Console.WriteLine("Choose starting city:");
+            StringBuilder StringBuilder = new();
+
+            for (int i = 0; i < Cities.Length; i++)
+            {
+                StringBuilder.Append(i + 1);
+                StringBuilder.Append(") ");
+                StringBuilder.Append(Cities[i].Name);
+                StringBuilder.Append("\n");
+            }
+            Console.WriteLine(StringBuilder.ToString());
+
+            int StartingCityChoice = Events.GetByteInputFromUser((byte) Cities.Length);
+
+            Player.CartCapacity = CartCapacity;
+            Player.StartingMoney = StartingMoney;
+            Player.Money = StartingMoney;
+            Player.StartingCityName = Cities[StartingCityChoice - 1].Name;
+        }
+
+        public void MainMenu()
+        {
+            Console.WriteLine("1) Continue");
+            Console.WriteLine("2) New Game");
+            Console.WriteLine("3) Settings");
+            Console.WriteLine("4) Exit");
+
+            byte NumberOfOptions = 4;
+
+            byte UserInput = Events.GetByteInputFromUser(NumberOfOptions);
+
+            switch (UserInput)
+            {
+                case 1:
+                    Console.WriteLine("1) Continue");
+                    break;
+                case 2:
+                    StartGame();
+                    break;
+                case 3:
+                    SettingsMenu();
+                    break;
+                case 4:
+                    System.Environment.Exit(0);
+                    break;
+            }
+
+        }
+
+        public void SettingsMenu()
+        {
+            Console.WriteLine("1) Add New Good");
+            Console.WriteLine("2) Update Good");
+            Console.WriteLine("3) Return To Main Menu");
+
+            byte NumberOfOptions = 3;
+
+            byte UserInput = Events.GetByteInputFromUser(NumberOfOptions);
+
+            switch (UserInput)
+            {
+                case 1:
+                    Console.WriteLine("Add New Good");
+                    break;
+                case 2:
+                    Console.WriteLine("Update Good");
+                    break;
+                case 3:
+                    MainMenu();
+                    break;
+            }
+        }
+
     }
 }

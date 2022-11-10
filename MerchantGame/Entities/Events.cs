@@ -145,7 +145,7 @@ namespace MerchantGame.Entities
             string EventAddition = "You saw Roadside Tavern, will you stay here?\n1 - Yes, I will stay\n2 - No, I won't";
             DayAnnouncement(EventAddition, TavernAnnouncementDayModifier);
 
-            Stay = GetInputFromUser();
+            Stay = GetByteInputFromUser();
 
             if (Stay == No)
             {
@@ -168,7 +168,7 @@ namespace MerchantGame.Entities
             }
 
             Console.WriteLine("Will you trade here?\n1 - Yes, I will trade\n2 - No, I won't");
-            Trade = GetInputFromUser();
+            Trade = GetByteInputFromUser();
             if (Trade == No) return;
 
             int TypeOfTradeIndex = Random.Shared.Next(TypesOfTrade.Length);
@@ -217,7 +217,7 @@ namespace MerchantGame.Entities
 
             Console.WriteLine($"Would you like to change destination city?\n1 - Yes, I will move to new city\n2 - No, I'l stay on my way");
 
-            byte ChangeCity = GetInputFromUser();
+            byte ChangeCity = GetByteInputFromUser();
 
             if (ChangeCity == No) return;
 
@@ -237,7 +237,7 @@ namespace MerchantGame.Entities
             else return new string[] { "No trades for you" };
         }
 
-        public static byte GetInputFromUser(byte maxValue = 2)
+        public static byte GetByteInputFromUser(byte numberOfOptions = 2)
         {
             byte Output;
             while (true)
@@ -245,12 +245,34 @@ namespace MerchantGame.Entities
                 try
                 {
                     Output = byte.Parse(Console.ReadLine());
-                    if (Output > maxValue || Output < 0) throw new Exception();
+                    if (Output > numberOfOptions || Output < 0) throw new Exception();
                     break;
                 }
                 catch
                 {
-                    Console.WriteLine($"Wrong input, please type a number in range from 1 to {maxValue}");
+                    Console.WriteLine($"Wrong input, please type a number in range from 1 to {numberOfOptions}");
+                }
+            }
+            
+            return Output;
+        }
+        public static int GetIntegerInputFromUser(int maxValue = 10_000, int minValue = 0)
+        {
+            string Message = $"Please type a number in range from {minValue} to {maxValue}";
+            Console.WriteLine(Message);
+
+            int Output;
+            while (true)
+            {
+                try
+                {
+                    Output = int.Parse(Console.ReadLine());
+                    if (Output > maxValue || Output < minValue) throw new Exception();
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine($"Wrong input. {Message}");
                 }
             }
             
