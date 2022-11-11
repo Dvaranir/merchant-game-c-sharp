@@ -59,48 +59,11 @@ namespace MerchantGame
 
             foreach (string table in Tables)
             {
-                Model.UpdateDatabase(table);
+                Model.ExecuteRequest(table);
             }
         }
 
-        private bool InsertInDatabase<T>(List<T> Data, string TargetTable)
-        {
-            if (Data.Count == 0) return false;
-
-            string InsertString = $"INSERT OR REPLACE INTO {TargetTable} VALUES ";
-
-            StringBuilder stringBuilder = new(InsertString);
-
-            foreach ( T data in Data)
-            {
-                stringBuilder.Append('(');
-                foreach (var property in data.GetType().GetProperties())
-                {
-                    var PropertyValue = property.GetValue(data, null);
-
-                    if (PropertyValue is List<string> PropertyList)
-                    {
-                        string PropertyString = string.Join(";", PropertyList);
-                        stringBuilder.Append($"'{PropertyString}', ");
-                    }
-                    else
-                    {
-                        stringBuilder.Append($"'{PropertyValue}', ");
-                    }
-                }
-                stringBuilder.Length -= 2;
-                stringBuilder.Append("), ");
-            }
-
-            stringBuilder.Length -= 2;
-            stringBuilder.Append(';');
-
-            string SqlRequest = stringBuilder.ToString();
-
-            Model.UpdateDatabase(SqlRequest);
-
-            return true;
-        }
+        
 
         private void GenerateGoods() =>
                Array.ForEach(Settings.GetGoodsNames(), name => Goods.Add(new Good(name)));
@@ -117,9 +80,9 @@ namespace MerchantGame
             
 
         private void InsertGoodsInDatabase() =>
-            InsertInDatabase(Goods, "goods");
+            Model.InsertInDatabase(Goods, "goods");
         private void InsertCitiesInDatabase() =>
-            InsertInDatabase(Cities, "cities");
+            Model.InsertInDatabase(Cities, "cities");
 
         public void Migrate() {
             AddTables();

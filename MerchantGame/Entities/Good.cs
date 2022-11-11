@@ -38,6 +38,14 @@ namespace MerchantGame.Entities
             Weight = weight;
             Price = price;
         }
+        public Good(string name, float quality, string qualityTag, byte weight, int price )
+        {
+            Name = name;
+            Quality = quality;
+            QualityTag = qualityTag;
+            Weight = weight;
+            Price = price;
+        }
 
         public void GoBad()
         {

@@ -29,10 +29,11 @@ namespace MerchantGame.Models
                     {
                         string Name = Reader.GetString(0);
                         float Quality = Reader.GetFloat(1);
-                        byte Weight = Reader.GetByte(2);
-                        int Price = Reader.GetInt32(3);
+                        string QualityTag = Reader.GetString(2);
+                        byte Weight = Reader.GetByte(3);
+                        int Price = Reader.GetInt32(4);
 
-                        OutputList.Add(new Good(Name, Quality, Weight, Price));
+                        OutputList.Add(new Good(Name, Quality, QualityTag, Weight, Price));
 
                     }
                 }
@@ -41,9 +42,9 @@ namespace MerchantGame.Models
             return OutputList;
         }
 
-        public static void Update(string name) 
+        public static void Update(string name, byte weight, int price) 
         {
-            string Request = "SELECT * FROM goods";
+            string Request = $"UPDATE goods SET weight = '{weight}', normal_quality_price = '{price}' WHERE name = '{name}'";
 
             using (SqliteConnection Connection = new SqliteConnection(ConnectionString))
             {
@@ -53,17 +54,7 @@ namespace MerchantGame.Models
                 {
                     Command.CommandText = Request;
 
-                    SqliteDataReader Reader = Command.ExecuteReader();
-
-                    while (Reader.Read())
-                    {
-                        string Name = Reader.GetString(0);
-                        float Quality = Reader.GetFloat(1);
-                        byte Weight = Reader.GetByte(2);
-                        int Price = Reader.GetInt32(3);
-
-
-                    }
+                    Command.ExecuteNonQuery();
                 }
                 Connection.Close();
             }

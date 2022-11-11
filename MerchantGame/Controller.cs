@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using MerchantGame.Entities;
 using MerchantGame.Models;
 
@@ -184,12 +185,39 @@ namespace MerchantGame
                     Console.WriteLine("Add New Good");
                     break;
                 case 2:
-                    Console.WriteLine("Update Good");
+                    UpdateGoodsMenu();
                     break;
                 case 3:
                     MainMenu();
                     break;
             }
+        }
+
+        public void UpdateGoodsMenu()
+        {
+            List<Good> GoodsFromDatabase = GoodsModel.GetAllGoods();
+
+            for (int i = 0; i < GoodsFromDatabase.Count; i++)
+            {
+                string name = GoodsFromDatabase[i].Name;
+                byte weight = GoodsFromDatabase[i].Weight;
+                int price = GoodsFromDatabase[i].Price;
+
+                Console.WriteLine($"{i+1}) {name} {weight} {price}");
+            }
+            Console.WriteLine(" ");
+
+            Console.WriteLine("Choose good to update");
+            byte ChoosenGood = Events.GetByteInputFromUser((byte) GoodsFromDatabase.Count);
+            string ChoosenGoodName = GoodsFromDatabase[ChoosenGood - 1].Name;
+
+            Console.WriteLine("Write new weight of the good (max 255)");
+            byte NewWeight = Events.GetByteInputFromUser(255);
+            
+            Console.WriteLine("Write new price of the good");
+            int NewPrice = Events.GetIntegerInputFromUser(10000);
+
+            GoodsModel.Update(ChoosenGoodName, NewWeight, NewPrice);
         }
 
     }
