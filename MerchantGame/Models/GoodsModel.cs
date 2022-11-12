@@ -2,9 +2,11 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MerchantGame.Models
 {
@@ -12,10 +14,10 @@ namespace MerchantGame.Models
     {
         public static List<Good> GetAllGoods()
         {
-            List<Good> OutputList = new List<Good>();
+            List<Good> OutputList = new();
             string Request = "SELECT * FROM goods";
 
-            using (SqliteConnection Connection = new SqliteConnection(ConnectionString))
+            using (SqliteConnection Connection = new(ConnectionString))
             {
                 Connection.Open();
 
@@ -34,7 +36,6 @@ namespace MerchantGame.Models
                         int Price = Reader.GetInt32(4);
 
                         OutputList.Add(new Good(Name, Quality, QualityTag, Weight, Price));
-
                     }
                 }
                 Connection.Close();
@@ -46,7 +47,25 @@ namespace MerchantGame.Models
         {
             string Request = $"UPDATE goods SET weight = '{weight}', normal_quality_price = '{price}' WHERE name = '{name}'";
 
-            using (SqliteConnection Connection = new SqliteConnection(ConnectionString))
+            using (SqliteConnection Connection = new(ConnectionString))
+            {
+                Connection.Open();
+
+                using (SqliteCommand Command = Connection.CreateCommand())
+                {
+                    Command.CommandText = Request;
+
+                    Command.ExecuteNonQuery();
+                }
+                Connection.Close();
+            }
+        }
+        public static void Add(string name, byte weight, int price)
+        {
+            Good Good = new(name, weight, price);
+            string Request = $"INSERT INTO goods VALUES ('{Good.Name}', '{Good.Quality}', '{Good.QualityTag}', '{Good.Weight}', '{Good.Price}')";
+
+            using (SqliteConnection Connection = new(ConnectionString))
             {
                 Connection.Open();
 

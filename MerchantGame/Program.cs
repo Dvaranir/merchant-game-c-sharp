@@ -6,7 +6,7 @@ using MerchantGame.Models;
 
 Controller Controller = new();
 
-Controller.UpdateGoodsMenu();
+Controller.SettingsMenu();
 
 
 

@@ -30,6 +30,14 @@ namespace MerchantGame.Entities
             Weight = (byte) Random.Shared.Next(GoodMinWeight, GoodMaxWeight);
             Price = Random.Shared.Next(GoodMinPrice, GoodMaxPrice);
         }
+        public Good(string name, byte weight, int price )
+        {
+            Name = name;
+            Quality = NormalQuality;
+            GenerateQualityTag();
+            Weight = weight;
+            Price = price;
+        }
         public Good(string name, float quality, byte weight, int price )
         {
             Name = name;

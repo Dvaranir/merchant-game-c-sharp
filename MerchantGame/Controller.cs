@@ -142,6 +142,7 @@ namespace MerchantGame
 
         public void MainMenu()
         {
+            Console.Clear();
             Console.WriteLine("1) Continue");
             Console.WriteLine("2) New Game");
             Console.WriteLine("3) Settings");
@@ -171,6 +172,9 @@ namespace MerchantGame
 
         public void SettingsMenu()
         {
+            Console.Clear();
+            List<Good> GoodsFromDatabase = ShowGoodsFromDatabase();
+
             Console.WriteLine("1) Add New Good");
             Console.WriteLine("2) Update Good");
             Console.WriteLine("3) Return To Main Menu");
@@ -182,10 +186,10 @@ namespace MerchantGame
             switch (UserInput)
             {
                 case 1:
-                    Console.WriteLine("Add New Good");
+                    AddGoodsMenu();
                     break;
                 case 2:
-                    UpdateGoodsMenu();
+                    UpdateGoodsMenu(GoodsFromDatabase);
                     break;
                 case 3:
                     MainMenu();
@@ -193,7 +197,7 @@ namespace MerchantGame
             }
         }
 
-        public void UpdateGoodsMenu()
+        public List<Good> ShowGoodsFromDatabase()
         {
             List<Good> GoodsFromDatabase = GoodsModel.GetAllGoods();
 
@@ -203,13 +207,16 @@ namespace MerchantGame
                 byte weight = GoodsFromDatabase[i].Weight;
                 int price = GoodsFromDatabase[i].Price;
 
-                Console.WriteLine($"{i+1}) {name} {weight} {price}");
+                Console.WriteLine($"{i + 1}) {name} {weight} {price}");
             }
             Console.WriteLine(" ");
-
+            return GoodsFromDatabase;
+        }
+        public void UpdateGoodsMenu(List<Good> goodsFromDatabase)
+        {
             Console.WriteLine("Choose good to update");
-            byte ChoosenGood = Events.GetByteInputFromUser((byte) GoodsFromDatabase.Count);
-            string ChoosenGoodName = GoodsFromDatabase[ChoosenGood - 1].Name;
+            byte ChoosenGood = Events.GetByteInputFromUser((byte) goodsFromDatabase.Count);
+            string ChoosenGoodName = goodsFromDatabase[ChoosenGood - 1].Name;
 
             Console.WriteLine("Write new weight of the good (max 255)");
             byte NewWeight = Events.GetByteInputFromUser(255);
@@ -218,7 +225,25 @@ namespace MerchantGame
             int NewPrice = Events.GetIntegerInputFromUser(10000);
 
             GoodsModel.Update(ChoosenGoodName, NewWeight, NewPrice);
-        }
 
+            SettingsMenu();
+        }
+        
+        public void AddGoodsMenu() 
+        {
+            Console.WriteLine("Write name of the good");
+            string Name = Console.ReadLine();
+            if (Name == null) AddGoodsMenu();
+
+            Console.WriteLine("Write weight of the good (max 255)");
+            byte Weight = Events.GetByteInputFromUser(255);
+
+            Console.WriteLine("Write new price of the good (max 10000)");
+            int Price = Events.GetIntegerInputFromUser(10000);
+
+            GoodsModel.Add(Name, Weight, Price);
+
+            SettingsMenu();
+        }
     }
 }

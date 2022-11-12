@@ -63,8 +63,6 @@ namespace MerchantGame
             }
         }
 
-        
-
         private void GenerateGoods() =>
                Array.ForEach(Settings.GetGoodsNames(), name => Goods.Add(new Good(name)));
 
