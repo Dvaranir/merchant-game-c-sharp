@@ -138,6 +138,7 @@ namespace MerchantGame
             else
                 Console.WriteLine($"{Player.Name} earned nothing");
 
+            Console.WriteLine();
             Console.WriteLine("Press Enter to exit");
             Console.ReadLine();
         }
