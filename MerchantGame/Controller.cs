@@ -137,6 +137,9 @@ namespace MerchantGame
                 Console.WriteLine($"{Player.Name} earned {(int) (Player.Money - Player.StartingMoney)}$");
             else
                 Console.WriteLine($"{Player.Name} earned nothing");
+
+            Console.WriteLine("Press Enter to exit");
+            Console.ReadLine();
         }
 
         public City GetRandomCity() =>
