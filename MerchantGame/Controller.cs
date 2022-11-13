@@ -33,18 +33,21 @@ namespace MerchantGame
 
         public void StartGame()
         {
+            Console.Clear();
             MerchantModel.Drop();
             ChangePlayerStats();
             InitialPurchase();
-            MainLoop();
-            SellAllGoods();
-            EndGameStatistic();
-            MerchantModel.Drop();
+            MainGamePlay();
         }
 
         public void ContinueGame()
         {
             LoadSaveGame();
+            MainGamePlay();
+        }
+
+        public void MainGamePlay()
+        {
             MainLoop();
             SellAllGoods();
             EndGameStatistic();
@@ -55,13 +58,13 @@ namespace MerchantGame
         {
             Player = MerchantModel.Get();
             DestinationCity = Player.DestinationCity;
-            Shop.AllGoods = GoodsModel.Get();
-            Shop.Init();
+            SyncShop();
             Events.Player = Player;
         }
 
         public void InitialPurchase()
         {
+            SyncShop();
             int LowestPrice = Shop.GetGoodLowestPrice();
             int LowestWeight = Shop.GetGoodLowestWeight();
 
@@ -75,8 +78,14 @@ namespace MerchantGame
                 if (Player.Money < LowestPrice ||
                     SpaceInCartLeft < LowestWeight) break;
             }
+            Console.WriteLine();
         }
 
+        public void SyncShop()
+        {
+            Shop.AllGoods = Model.GetAllGoods();
+            Shop.Init();
+        }
         public void MainLoop()
         {
             int SaveInterval = Settings.SaveInterval;
@@ -122,7 +131,7 @@ namespace MerchantGame
             double Money = Player.Money;
 
             Console.WriteLine($"{Player.Name} passed {Player.DistanceTraveled}km");
-            Console.WriteLine($"{Player.Name} have {(int) Player.StartingMoney}$ at start");
+            Console.WriteLine($"{Player.Name} had {(int) Player.StartingMoney}$ at start");
             Console.WriteLine($"{Player.Name} have {(int) Player.Money}$ now");
             if (StartingMoney < Money)
                 Console.WriteLine($"{Player.Name} earned {(int) (Player.Money - Player.StartingMoney)}$");
@@ -138,11 +147,17 @@ namespace MerchantGame
 
         public void ChangePlayerStats()
         {
-            Console.WriteLine("Write cart capacity:");
+            Console.WriteLine("Type a name for your merchant:");
+            string Name = Events.GetStringInputFromUser();
+            Console.Clear();
+            
+            Console.WriteLine("Type cart capacity:");
             int CartCapacity = Events.GetIntegerInputFromUser();
+            Console.Clear();
 
-            Console.WriteLine("Write starting money:");
+            Console.WriteLine("Type starting money:");
             int StartingMoney = Events.GetIntegerInputFromUser();
+            Console.Clear();
 
 
             Console.WriteLine("Choose starting city:");
@@ -159,10 +174,14 @@ namespace MerchantGame
 
             int StartingCityChoice = Events.GetByteInputFromUser((byte) Cities.Length);
 
+            Player.Name = Name;
             Player.CartCapacity = CartCapacity;
             Player.StartingMoney = StartingMoney;
             Player.Money = StartingMoney;
             Player.StartingCityName = Cities[StartingCityChoice - 1].Name;
+
+            MerchantModel.Add(Player);
+            Console.Clear();
         }
 
         public void MainMenu()
@@ -179,7 +198,6 @@ namespace MerchantGame
                 Console.WriteLine("4) Continue");
                 NumberOfOptions = 4;
             }
-
 
             byte UserInput = Events.GetByteInputFromUser(NumberOfOptions);
 
@@ -213,6 +231,7 @@ namespace MerchantGame
             byte NumberOfOptions = 3;
 
             byte UserInput = Events.GetByteInputFromUser(NumberOfOptions);
+            Console.WriteLine();
 
             switch (UserInput)
             {
@@ -238,7 +257,7 @@ namespace MerchantGame
                 byte weight = GoodsFromDatabase[i].Weight;
                 int price = GoodsFromDatabase[i].Price;
 
-                Console.WriteLine($"{i + 1}) {name} {weight} {price}");
+                Console.WriteLine($"{i + 1}) {name} {weight}kg {price}$");
             }
             Console.WriteLine(" ");
             return GoodsFromDatabase;
@@ -249,12 +268,15 @@ namespace MerchantGame
             Console.WriteLine("Choose good to update");
             byte ChoosenGood = Events.GetByteInputFromUser((byte) goodsFromDatabase.Count);
             string ChoosenGoodName = goodsFromDatabase[ChoosenGood - 1].Name;
+            Console.WriteLine();
 
             Console.WriteLine("Write new weight of the good (max 255)");
             byte NewWeight = Events.GetByteInputFromUser(255);
-            
+            Console.WriteLine();
+
             Console.WriteLine("Write new price of the good");
             int NewPrice = Events.GetIntegerInputFromUser(10000);
+            Console.WriteLine();
 
             GoodsModel.Update(ChoosenGoodName, NewWeight, NewPrice);
 
@@ -263,13 +285,16 @@ namespace MerchantGame
         
         public void AddGoodsMenu() 
         {
-            Console.WriteLine("Write name of the good");
+            Console.Clear();
+            Console.WriteLine("Write a name of the good");
             string Name = Console.ReadLine();
             if (Name == null) AddGoodsMenu();
 
+            Console.Clear();
             Console.WriteLine("Write weight of the good (max 255)");
             byte Weight = Events.GetByteInputFromUser(255);
 
+            Console.Clear();
             Console.WriteLine("Write new price of the good (max 10000)");
             int Price = Events.GetIntegerInputFromUser(10000);
 

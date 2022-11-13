@@ -51,7 +51,7 @@ namespace MerchantGame.Models
         public static void Add(string name, byte weight, int price)
         {
             Good Good = new(name, weight, price);
-            string Request = $"INSERT INTO goods VALUES ('{Good.Name}', '{Good.Quality}', '{Good.QualityTag}', '{Good.Weight}', '{Good.Price}')";
+            string Request = $"INSERT INTO goods VALUES ('{Good.Name}', '{Good.Quality}', '{Good.QualityTag}', '{Good.Weight}', '{Good.Price}', '{Good.Id}')";
             
             ExecuteRequest(Request);
         }
