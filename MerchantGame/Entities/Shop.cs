@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,11 +20,15 @@ namespace MerchantGame.Entities
         public Shop ()
         {
             AllGoods = GenerateGoods().OrderBy(good => good.Price).ToList();
+            Init();
+        }
+
+        public void Init()
+        {
             MinPrice = AllGoods.MinBy(good => good.Price)!.Price;
             MinWeight = AllGoods.MinBy(good => good.Weight)!.Weight;
             AllGoodsCount = AllGoods.Count;
         }
-
         private static List<Good> GenerateGoods()
         {
             List<Good> goods = new();
@@ -57,8 +63,12 @@ namespace MerchantGame.Entities
         public Good GenerateRandomGood() =>
             AllGoods[Random.Shared.Next(0, AllGoodsCount - 1)];
 
-        public Good GenerateRandomGood(List<Good> goods) =>
-            AllGoods[Random.Shared.Next(0, AllGoodsCount - 1)];
+        public Good GenerateRandomGood(List<Good> goods)
+        {
+            Good RandomGood = AllGoods[Random.Shared.Next(0, AllGoodsCount - 1)];
+            return new(RandomGood.Name, RandomGood.Quality, RandomGood.Weight, RandomGood.Price);
+        }
+            
 
         public int GetGoodLowestPrice() =>
             AllGoods.MinBy(good => good!.Price)!.Price;
@@ -73,5 +83,28 @@ namespace MerchantGame.Entities
 
         public Good GetGoodForCustomerNeeds(double money, int spaceLeft) =>
             GenerateRandomGood(ChooseGoodsForCustomerNeeds(money, spaceLeft));
+
+        public int CalculatePossibleProfit(Merchant player) =>
+            player.GoodsInCart.Aggregate(0, (acc, good) => 
+                (int) (acc + good.Price * good.Quality));
+
+        public int CalculatePossibleProfit(Merchant player, City city)
+        {
+            int PossibleProfit = player.GoodsInCart.Aggregate(0, CheckForRequired);
+
+            return PossibleProfit;
+
+            int CheckForRequired(int acc, Good good)
+            {
+                int Modifier = Settings.CityRequiredGoodsModifier;
+
+                if (city.RequiredGoods.Contains(good.Name))
+                    return (int)(acc + (good.Price * good.Quality) * Modifier);
+                else 
+                    return (int)(acc + good.Price * good.Quality);
+            }
+        }
+            
+        
     }
 }

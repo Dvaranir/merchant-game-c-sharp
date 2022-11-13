@@ -23,7 +23,46 @@ namespace MerchantGame
             SqlRequest = "";
         }
 
-        public static void UpdateDatabase(string sqlRequest)
+        public static bool InsertInDatabase<T>(List<T> Data, string TargetTable)
+        {
+            if (Data.Count == 0) return false;
+
+            string InsertString = $"INSERT OR REPLACE INTO {TargetTable} VALUES ";
+
+            StringBuilder stringBuilder = new(InsertString);
+
+            foreach (T data in Data)
+            {
+                stringBuilder.Append('(');
+                foreach (var property in data.GetType().GetProperties())
+                {
+                    var PropertyValue = property.GetValue(data, null);
+
+                    if (PropertyValue is List<string> PropertyList)
+                    {
+                        string PropertyString = string.Join(";", PropertyList);
+                        stringBuilder.Append($"'{PropertyString}', ");
+                    }
+                    else
+                    {
+                        stringBuilder.Append($"'{PropertyValue}', ");
+                    }
+                }
+                stringBuilder.Length -= 2;
+                stringBuilder.Append("), ");
+            }
+
+            stringBuilder.Length -= 2;
+            stringBuilder.Append(';');
+
+            string SqlRequest = stringBuilder.ToString();
+
+            ExecuteRequest(SqlRequest);
+
+            return true;
+        }
+
+        public static void ExecuteRequest(string sqlRequest)
         {
             using (SqliteConnection Connection = new SqliteConnection(ConnectionString))
             {

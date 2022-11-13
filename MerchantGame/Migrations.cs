@@ -20,13 +20,13 @@ namespace MerchantGame
         public Shop Shop { get; set; }
 
         const string TableMerchant =
-            "CREATE TABLE IF NOT EXISTS merchant (name VARCHAR(20) PRIMARY KEY, money INTEGER);";
+            "CREATE TABLE IF NOT EXISTS merchant (name VARCHAR(100) PRIMARY KEY, cart_capacity INTEGER, carrying_weight INTEGER, money INTEGER, starting_money INTEGER, distance_left INTEGER, distance_traveled INTEGER, starting_city_name VARCHAR(200), destination_city_name VARCHAR(200), days_on_road INTEGER, gossips_event_appeared BOOLEAN);";
         const string TableGoods =
-            "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(20) PRIMARY KEY, quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER);";
+            "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(100) PRIMARY KEY, quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER, id VARCHAR(100));";
         const string TableCities =
-            "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(20) PRIMARY KEY, distance INTEGER, required_goods TEXT);";
+            "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(100) PRIMARY KEY, distance INTEGER, required_goods TEXT);";
         const string TableGoodsInCart =
-            "CREATE TABLE IF NOT EXISTS goods_in_cart (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(20), quality REAL, weight INTEGER, normal_quality_price INTEGER);";
+            "CREATE TABLE IF NOT EXISTS goods_in_cart (id STRING PRIMARY KEY, name VARCHAR(100), quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER, player_name VARCHAR(100), CONSTRAINT fk_merchant FOREIGN KEY (player_name) REFERENCES merchant(name) ON DELETE CASCADE);";
 
         readonly string[] CitiesNames = new string[] { "New York", "Almaty", "Toronto", "Berlin", "Paris", "London", "Sydney" };
 
@@ -59,47 +59,8 @@ namespace MerchantGame
 
             foreach (string table in Tables)
             {
-                Model.UpdateDatabase(table);
+                Model.ExecuteRequest(table);
             }
-        }
-
-        private bool InsertInDatabase<T>(List<T> Data, string TargetTable)
-        {
-            if (Data.Count == 0) return false;
-
-            string InsertString = $"INSERT OR REPLACE INTO {TargetTable} VALUES ";
-
-            StringBuilder stringBuilder = new(InsertString);
-
-            foreach ( T data in Data)
-            {
-                stringBuilder.Append('(');
-                foreach (var property in data.GetType().GetProperties())
-                {
-                    var PropertyValue = property.GetValue(data, null);
-
-                    if (PropertyValue is List<string> PropertyList)
-                    {
-                        string PropertyString = string.Join(";", PropertyList);
-                        stringBuilder.Append($"'{PropertyString}', ");
-                    }
-                    else
-                    {
-                        stringBuilder.Append($"'{PropertyValue}', ");
-                    }
-                }
-                stringBuilder.Length -= 2;
-                stringBuilder.Append("), ");
-            }
-
-            stringBuilder.Length -= 2;
-            stringBuilder.Append(';');
-
-            string SqlRequest = stringBuilder.ToString();
-
-            Model.UpdateDatabase(SqlRequest);
-
-            return true;
         }
 
         private void GenerateGoods() =>
@@ -114,12 +75,11 @@ namespace MerchantGame
             }
             
         }
-            
 
         private void InsertGoodsInDatabase() =>
-            InsertInDatabase(Goods, "goods");
+            Model.InsertInDatabase(Goods, "goods");
         private void InsertCitiesInDatabase() =>
-            InsertInDatabase(Cities, "cities");
+            Model.InsertInDatabase(Cities, "cities");
 
         public void Migrate() {
             AddTables();

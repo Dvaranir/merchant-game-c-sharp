@@ -12,47 +12,80 @@ namespace MerchantGame.Entities
     {
         public string Name { get; set; }
         public double Money { get; set; }
+        public double StartingMoney { get; set; }
         public byte CartSpeed { get; set; }
         public int CartCapacity { get; set; }
         public int CarryingWeight { get; set; }
         public List<Good> GoodsInCart { get; set; }
         public string StartingCityName { get; set; }
-        public string DestinationCityName { get; set; }
+        public City DestinationCity { get; set; }
         public int DistanceLeft { get; set; }
-        public int DaysOnTheRoad { get; set; }
+        public int DistanceTraveled { get; set; }
+        public int DaysOnRoad { get; set; }
+        public bool GossipsEventAppeared { get; set; }
 
         readonly int MaximumMoney = Settings.MerchantMaximumMoney;
         readonly int CartCapacitySetting = Settings.MerchantCartCapacity;
 
-        public Merchant(string startingCityName, City destinationCity, string name = "Player 1")
+        public Merchant()
         {
-            Name = name;
+            Name = "";
             CartCapacity = CartCapacitySetting;
             CarryingWeight = 0;
             Money = Random.Shared.Next(MaximumMoney);
+            StartingMoney = Money;
             GoodsInCart = new List<Good>();
-            StartingCityName = startingCityName;
-            DestinationCityName = destinationCity.Name;
-            DistanceLeft = destinationCity.Distance;
-            DaysOnTheRoad = 0;
+            StartingCityName = "";
+            DestinationCity = new();
+            DistanceLeft = 0;
+            DistanceTraveled = 0;
+            DaysOnRoad = 0;
+            GossipsEventAppeared = false;
         }
-        public Merchant(string name,
-                        byte distanceLeft,
-                        string startingCityName,
-                        string destinationCityName)
+        public Merchant(string startingCityName, 
+                        City destinationCity, 
+                        string name = "Player 1")
         {
             Name = name;
             CartCapacity = CartCapacitySetting;
             CarryingWeight = 0;
             Money = Random.Shared.Next(MaximumMoney);
+            StartingMoney = Money;
             GoodsInCart = new List<Good>();
-            DistanceLeft = distanceLeft;
             StartingCityName = startingCityName;
-            DestinationCityName = destinationCityName;
-            DaysOnTheRoad = 0;
+            DestinationCity = destinationCity;
+            DistanceLeft = destinationCity.Distance;
+            DistanceTraveled = 0;
+            DaysOnRoad = 0;
+            GossipsEventAppeared = false;
         }
 
-        
+        public void Init(string name,
+                        int cartCapacity,
+                        int carryingWeight,
+                        double money,
+                        double startingMoney,
+                        List<Good> goodsInCart,
+                        int distanceLeft,
+                        int distanceTraveled,
+                        string startingCityName,
+                        City destinationCity,
+                        int daysOnRoad,
+                        byte gossipsEventAppeared)
+        {
+            Name = name;
+            CartCapacity = cartCapacity;
+            CarryingWeight = carryingWeight;
+            Money = money;
+            StartingMoney = startingMoney;
+            GoodsInCart = goodsInCart;
+            DistanceLeft = distanceLeft;
+            DistanceTraveled = distanceTraveled;
+            StartingCityName = startingCityName;
+            DestinationCity = destinationCity;
+            DaysOnRoad = daysOnRoad;
+            GossipsEventAppeared = Convert.ToBoolean(gossipsEventAppeared);
+        }
 
         public void SpeedUp(byte minSpeed = 1, byte maxSpeed = 5) =>
             CartSpeed = (byte)Random.Shared.Next(minSpeed, maxSpeed);
@@ -60,10 +93,11 @@ namespace MerchantGame.Entities
         public void Ride()
         {
             DistanceLeft -= CartSpeed;
-            DaysOnTheRoad++;
+            DistanceTraveled += CartSpeed;
+            DaysOnRoad++;
         }
 
-        public void Stay() => DaysOnTheRoad++;
+        public void Stay() => DaysOnRoad++;
 
         public void SpeedUpAndRide(byte minSpeed = 1, byte maxSpeed = 5)
         {
@@ -74,11 +108,11 @@ namespace MerchantGame.Entities
         public int SelectRandomGoodInCart() =>
             Random.Shared.Next(GoodsInCart.Count - 1);
 
-
         public void BuyGood(Good good) 
         {
             GoodsInCart.Add(good);
             Money -= good.Price;
+            CarryingWeight += good.Weight;
         }
 
         public GoodNameAndPrice SellGood(int goodIndex = 0, int sellModifier = 1)
@@ -104,14 +138,13 @@ namespace MerchantGame.Entities
             GoodsInCart[indexOfGood] = newGood;
             return ExchangedGoodName;
         }
-            
-        
 
         public void GiveAwayBestGood()
         {
             if (GoodsInCart.Count > 0) return;
             try {
                 Good GoodWithMaxPrice = GoodsInCart.MaxBy(good => good.Price);
+                Console.WriteLine($"{Name} gave {GoodWithMaxPrice.Name} from his cart, for nignt in tavern");
                 GoodsInCart.Remove(GoodWithMaxPrice);
             } catch { }
         }
@@ -120,6 +153,17 @@ namespace MerchantGame.Entities
         {
             if (Money >= overnightCost) Money -= overnightCost;
             else GiveAwayBestGood();
+        }
+
+        public void ChangeDestinationCity(City city)
+        {
+            int PartOfDistanceTraveled = 4;
+            float PartOfNewDistance = 0.66f;
+
+            DestinationCity = city;
+            DistanceLeft = (int)
+                (DistanceTraveled / PartOfDistanceTraveled + 
+                 city.Distance * PartOfNewDistance);
         }
 
     }
