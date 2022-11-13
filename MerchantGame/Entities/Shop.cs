@@ -20,11 +20,15 @@ namespace MerchantGame.Entities
         public Shop ()
         {
             AllGoods = GenerateGoods().OrderBy(good => good.Price).ToList();
+            Init();
+        }
+
+        public void Init()
+        {
             MinPrice = AllGoods.MinBy(good => good.Price)!.Price;
             MinWeight = AllGoods.MinBy(good => good.Weight)!.Weight;
             AllGoodsCount = AllGoods.Count;
         }
-
         private static List<Good> GenerateGoods()
         {
             List<Good> goods = new();

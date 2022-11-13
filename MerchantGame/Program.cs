@@ -8,8 +8,8 @@ using MerchantGame.Entities;
 using MerchantGame.Models;
 
 Controller Controller = new();
-
-Controller.StartGame();
+Controller.MainMenu();
+//MerchantModel.Check();
 
 
 

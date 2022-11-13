@@ -21,12 +21,27 @@ namespace MerchantGame.Entities
         public City DestinationCity { get; set; }
         public int DistanceLeft { get; set; }
         public int DistanceTraveled { get; set; }
-        public int DaysOnTheRoad { get; set; }
+        public int DaysOnRoad { get; set; }
         public bool GossipsEventAppeared { get; set; }
 
         readonly int MaximumMoney = Settings.MerchantMaximumMoney;
         readonly int CartCapacitySetting = Settings.MerchantCartCapacity;
 
+        public Merchant()
+        {
+            Name = "";
+            CartCapacity = CartCapacitySetting;
+            CarryingWeight = 0;
+            Money = Random.Shared.Next(MaximumMoney);
+            StartingMoney = Money;
+            GoodsInCart = new List<Good>();
+            StartingCityName = "";
+            DestinationCity = new();
+            DistanceLeft = 0;
+            DistanceTraveled = 0;
+            DaysOnRoad = 0;
+            GossipsEventAppeared = false;
+        }
         public Merchant(string startingCityName, 
                         City destinationCity, 
                         string name = "Player 1")
@@ -41,11 +56,11 @@ namespace MerchantGame.Entities
             DestinationCity = destinationCity;
             DistanceLeft = destinationCity.Distance;
             DistanceTraveled = 0;
-            DaysOnTheRoad = 0;
+            DaysOnRoad = 0;
             GossipsEventAppeared = false;
         }
 
-        public Merchant(string name,
+        public void Init(string name,
                         int cartCapacity,
                         int carryingWeight,
                         double money,
@@ -68,7 +83,7 @@ namespace MerchantGame.Entities
             DistanceTraveled = distanceTraveled;
             StartingCityName = startingCityName;
             DestinationCity = destinationCity;
-            DaysOnTheRoad = daysOnRoad;
+            DaysOnRoad = daysOnRoad;
             GossipsEventAppeared = Convert.ToBoolean(gossipsEventAppeared);
         }
 
@@ -79,10 +94,10 @@ namespace MerchantGame.Entities
         {
             DistanceLeft -= CartSpeed;
             DistanceTraveled += CartSpeed;
-            DaysOnTheRoad++;
+            DaysOnRoad++;
         }
 
-        public void Stay() => DaysOnTheRoad++;
+        public void Stay() => DaysOnRoad++;
 
         public void SpeedUpAndRide(byte minSpeed = 1, byte maxSpeed = 5)
         {

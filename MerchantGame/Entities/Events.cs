@@ -281,10 +281,10 @@ namespace MerchantGame.Entities
         }
 
         public void DayAnnouncement(string EventAddition) =>
-            Console.WriteLine($"Day N{Player.DaysOnTheRoad} {EventAddition}");
+            Console.WriteLine($"Day N{Player.DaysOnRoad} {EventAddition}");
         
         public void DayAnnouncement(string EventAddition, int DayModifier) =>
-            Console.WriteLine($"Day N{Player.DaysOnTheRoad + DayModifier} {EventAddition}");
+            Console.WriteLine($"Day N{Player.DaysOnRoad + DayModifier} {EventAddition}");
 
         public Good ChooseGoodForPlayer() =>
             Shop.GetGoodForCustomerNeeds(Player.Money, Player.CartCapacity - Player.CartCapacity);

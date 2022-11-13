@@ -12,7 +12,7 @@ namespace MerchantGame.Models
 {
     internal class GoodsModel : Model
     {
-        public static List<Good> GetAllGoods()
+        public static List<Good> Get()
         {
             List<Good> OutputList = new();
             string Request = "SELECT * FROM goods";

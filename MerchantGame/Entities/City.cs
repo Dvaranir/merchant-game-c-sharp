@@ -16,6 +16,12 @@ namespace MerchantGame.Entities
         readonly int MaxDistance = Settings.CityMaxDistance;
         readonly int MinDistance = Settings.CityMinDistance;
 
+        public City()
+        {
+            Name = "";
+            Distance = 0;
+            RequiredGoods = new();
+        }
         public City(string name, List<string> requiredGoods)
         {
             Name = name;

@@ -24,7 +24,7 @@ namespace MerchantGame
             Migrations = new();
             Migrations.CreateDatabaseIfNotExist();
 
-            Cities = CitiesModel.GetAllCities();
+            Cities = CitiesModel.GetAll();
             DestinationCity = GetRandomCity();
             Player = new(GetRandomCityName(), DestinationCity);
             Shop = new();
@@ -33,16 +33,31 @@ namespace MerchantGame
 
         public void StartGame()
         {
+            MerchantModel.Drop();
             ChangePlayerStats();
             InitialPurchase();
             MainLoop();
             SellAllGoods();
             EndGameStatistic();
+            MerchantModel.Drop();
         }
 
         public void ContinueGame()
         {
-            List<Good> Goods = GoodsModel.GetAllGoods();
+            LoadSaveGame();
+            MainLoop();
+            SellAllGoods();
+            EndGameStatistic();
+            MerchantModel.Drop();
+        }
+
+        public void LoadSaveGame()
+        {
+            Player = MerchantModel.Get();
+            DestinationCity = Player.DestinationCity;
+            Shop.AllGoods = GoodsModel.Get();
+            Shop.Init();
+            Events.Player = Player;
         }
 
         public void InitialPurchase()
@@ -153,28 +168,34 @@ namespace MerchantGame
         public void MainMenu()
         {
             Console.Clear();
-            Console.WriteLine("1) Continue");
-            Console.WriteLine("2) New Game");
-            Console.WriteLine("3) Settings");
-            Console.WriteLine("4) Exit");
+            bool SaveExist = MerchantModel.Check();
+            Console.WriteLine("1) New Game");
+            Console.WriteLine("2) Settings");
+            Console.WriteLine("3) Exit");
+            byte NumberOfOptions = 3;
 
-            byte NumberOfOptions = 4;
+            if (SaveExist) 
+            { 
+                Console.WriteLine("4) Continue");
+                NumberOfOptions = 4;
+            }
+
 
             byte UserInput = Events.GetByteInputFromUser(NumberOfOptions);
 
             switch (UserInput)
             {
                 case 1:
-                    Console.WriteLine("1) Continue");
-                    break;
-                case 2:
                     StartGame();
                     break;
-                case 3:
+                case 2:
                     SettingsMenu();
                     break;
-                case 4:
+                case 3:
                     System.Environment.Exit(0);
+                    break;
+                case 4:
+                    ContinueGame();
                     break;
             }
 
@@ -209,7 +230,7 @@ namespace MerchantGame
 
         public List<Good> ShowGoodsFromDatabase()
         {
-            List<Good> GoodsFromDatabase = GoodsModel.GetAllGoods();
+            List<Good> GoodsFromDatabase = GoodsModel.Get();
 
             for (int i = 0; i < GoodsFromDatabase.Count; i++)
             {
@@ -259,7 +280,7 @@ namespace MerchantGame
         
         public void SavePlayer()
         {
-            PlayerModel.Add(Player);
+            MerchantModel.Add(Player);
             GoodsInCartModel.Add(Player.GoodsInCart, Player.Name);
         }
     }
