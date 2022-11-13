@@ -20,13 +20,13 @@ namespace MerchantGame
         public Shop Shop { get; set; }
 
         const string TableMerchant =
-            "CREATE TABLE IF NOT EXISTS merchant (name VARCHAR(50) PRIMARY KEY, money INTEGER);";
+            "CREATE TABLE IF NOT EXISTS merchant (name VARCHAR(100) PRIMARY KEY, cart_capacity INTEGER, carrying_weight INTEGER, money INTEGER, starting_money INTEGER, distance_left INTEGER, distance_traveled INTEGER, starting_city_name VARCHAR(200), destination_city_name VARCHAR(200), days_on_road INTEGER, gossips_event_appeared BOOLEAN);";
         const string TableGoods =
-            "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(50) PRIMARY KEY, quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER);";
+            "CREATE TABLE IF NOT EXISTS goods (name VARCHAR(100) PRIMARY KEY, quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER, id VARCHAR(100));";
         const string TableCities =
-            "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(50) PRIMARY KEY, distance INTEGER, required_goods TEXT);";
+            "CREATE TABLE IF NOT EXISTS cities (name VARCHAR(100) PRIMARY KEY, distance INTEGER, required_goods TEXT);";
         const string TableGoodsInCart =
-            "CREATE TABLE IF NOT EXISTS goods_in_cart (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(20), quality REAL, weight INTEGER, normal_quality_price INTEGER);";
+            "CREATE TABLE IF NOT EXISTS goods_in_cart (id STRING PRIMARY KEY, name VARCHAR(100), quality REAL, quality_tags VARCHAR(40), weight INTEGER, normal_quality_price INTEGER, player_name VARCHAR(100), CONSTRAINT fk_merchant FOREIGN KEY (player_name) REFERENCES merchant(name) ON DELETE CASCADE);";
 
         readonly string[] CitiesNames = new string[] { "New York", "Almaty", "Toronto", "Berlin", "Paris", "London", "Sydney" };
 
@@ -75,7 +75,6 @@ namespace MerchantGame
             }
             
         }
-            
 
         private void InsertGoodsInDatabase() =>
             Model.InsertInDatabase(Goods, "goods");

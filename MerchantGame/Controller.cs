@@ -64,10 +64,20 @@ namespace MerchantGame
 
         public void MainLoop()
         {
+            int SaveInterval = Settings.SaveInterval;
+            int i = 0;
+
             while (true)
             {
                 Events.RandomEvent();
-                
+                i++;
+
+                if (i >= SaveInterval)
+                {
+                    SavePlayer();
+                    i = 0;
+                }
+
                 if (Player.DistanceLeft <= 0)
                 {
                     Player.DistanceLeft = 0;
@@ -212,6 +222,7 @@ namespace MerchantGame
             Console.WriteLine(" ");
             return GoodsFromDatabase;
         }
+        
         public void UpdateGoodsMenu(List<Good> goodsFromDatabase)
         {
             Console.WriteLine("Choose good to update");
@@ -244,6 +255,12 @@ namespace MerchantGame
             GoodsModel.Add(Name, Weight, Price);
 
             SettingsMenu();
+        }
+        
+        public void SavePlayer()
+        {
+            PlayerModel.Add(Player);
+            GoodsInCartModel.Add(Player.GoodsInCart, Player.Name);
         }
     }
 }

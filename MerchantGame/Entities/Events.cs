@@ -30,8 +30,8 @@ namespace MerchantGame.Entities
             AllEvents =
             new Action[] {
                 NormalDay, SmoothRoad, CartIsBroken,
-                River, MeetLocal, RoguesAttack, 
-                RoadsideTavern
+                River, MeetLocal, RoguesAttack, Rain,
+                GoodRotten, RoadsideTavern
             };
         }
 
@@ -56,10 +56,11 @@ namespace MerchantGame.Entities
         {
             int NumberOfGoods = Player.GoodsInCart.Count;
             int RandomGoodIndex = Random.Shared.Next(NumberOfGoods - 1);
-            Player.GoodsInCart[RandomGoodIndex].GoBad();
+            Good GoodInCart = Player.GoodsInCart[RandomGoodIndex];
+            GoodInCart.GoBad();
             Player.SpeedUpAndRide();
 
-            string EventAddition = "One product has gone bad";
+            string EventAddition = $"{GoodInCart.Name} has gone bad and now it's quality is {GoodInCart.QualityTag}";
             DayAnnouncement(EventAddition);
         }
 

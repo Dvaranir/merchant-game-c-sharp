@@ -46,24 +46,29 @@ namespace MerchantGame.Entities
         }
 
         public Merchant(string name,
-                        byte distanceLeft,
+                        int cartCapacity,
+                        int carryingWeight,
+                        double money,
+                        double startingMoney,
+                        List<Good> goodsInCart,
+                        int distanceLeft,
+                        int distanceTraveled,
                         string startingCityName,
                         City destinationCity,
-                        double startingMoney,
-                        int distanceTraveled,
+                        int daysOnRoad,
                         byte gossipsEventAppeared)
         {
             Name = name;
-            CartCapacity = CartCapacitySetting;
-            CarryingWeight = 0;
-            Money = Random.Shared.Next(MaximumMoney);
+            CartCapacity = cartCapacity;
+            CarryingWeight = carryingWeight;
+            Money = money;
             StartingMoney = startingMoney;
-            GoodsInCart = new List<Good>();
+            GoodsInCart = goodsInCart;
             DistanceLeft = distanceLeft;
             DistanceTraveled = distanceTraveled;
             StartingCityName = startingCityName;
             DestinationCity = destinationCity;
-            DaysOnTheRoad = 0;
+            DaysOnTheRoad = daysOnRoad;
             GossipsEventAppeared = Convert.ToBoolean(gossipsEventAppeared);
         }
 
@@ -92,6 +97,7 @@ namespace MerchantGame.Entities
         {
             GoodsInCart.Add(good);
             Money -= good.Price;
+            CarryingWeight += good.Weight;
         }
 
         public GoodNameAndPrice SellGood(int goodIndex = 0, int sellModifier = 1)

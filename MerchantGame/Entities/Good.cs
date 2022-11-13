@@ -13,6 +13,7 @@ namespace MerchantGame.Entities
         public string? QualityTag { get; set; }
         public byte Weight { get; set; }
         public int Price { get; set; }
+        public string Id { get; set; }
 
         readonly int GoodMaxWeight = Settings.GoodMaxWeight;
         readonly int GoodMinWeight = Settings.GoodMinWeight;
@@ -29,6 +30,7 @@ namespace MerchantGame.Entities
             QualityTag = "Best";
             Weight = (byte) Random.Shared.Next(GoodMinWeight, GoodMaxWeight);
             Price = Random.Shared.Next(GoodMinPrice, GoodMaxPrice);
+            Id = Guid.NewGuid().ToString();
         }
         public Good(string name, byte weight, int price )
         {
@@ -37,22 +39,25 @@ namespace MerchantGame.Entities
             GenerateQualityTag();
             Weight = weight;
             Price = price;
+            Id = Guid.NewGuid().ToString();
         }
-        public Good(string name, float quality, byte weight, int price )
+        public Good(string name, float quality, byte weight, int price)
         {
             Name = name;
             Quality = quality;
             GenerateQualityTag();
             Weight = weight;
             Price = price;
+            Id = Guid.NewGuid().ToString();
         }
-        public Good(string name, float quality, string qualityTag, byte weight, int price )
+        public Good(string name, float quality, string qualityTag, byte weight, int price, string id)
         {
             Name = name;
             Quality = quality;
             QualityTag = qualityTag;
             Weight = weight;
             Price = price;
+            Id = id;
         }
 
         public void GoBad()
@@ -76,6 +81,7 @@ namespace MerchantGame.Entities
                     QualityTag = "Spoiled";
                     break;
             }
+            GenerateQualityTag();
         }
 
         public void GenerateQualityTag()

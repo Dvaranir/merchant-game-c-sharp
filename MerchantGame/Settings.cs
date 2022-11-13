@@ -11,6 +11,7 @@ namespace MerchantGame
     {
         public const int MerchantCartCapacity = 2000;
         public const int MerchantMaximumMoney = 5000;
+        public const int SaveInterval = 5;
 
         public const int CityMaxDistance = 101;
         public const int CityMinDistance = 50;
