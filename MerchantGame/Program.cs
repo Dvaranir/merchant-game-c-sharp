@@ -9,7 +9,6 @@ using MerchantGame.Models;
 
 Controller Controller = new();
 Controller.MainMenu();
-//MerchantModel.Check();
 
 
 
