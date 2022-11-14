@@ -327,34 +327,18 @@
             int SymbolStringLength;
             string SymbolString, FormattedMessage;
 
-            if (MessageList.Length > 1)
+            SymbolStringLength = MessageList.MaxBy(message => message.Length).Length + LengthModifier + NumberOfSpaces;
+            SymbolString = new(symbol, SymbolStringLength);
+
+            Console.WriteLine(SymbolString);
+            foreach (string line in MessageList)
             {
-                SymbolStringLength = MessageList.MaxBy(message => message.Length).Length + LengthModifier + NumberOfSpaces;
-                SymbolString = new(symbol, SymbolStringLength);
-
-                Console.WriteLine(SymbolString);
-                foreach (string line in MessageList)
-                {
-                    string PreformatedLine = $" {line} ";
-                    FormattedMessage = PadCenter(PreformatedLine, SymbolStringLength, symbol);
-                    Console.WriteLine(FormattedMessage);
-                }
-                Console.WriteLine(SymbolString);
-                Console.WriteLine();
-            }
-
-            else 
-            {
-                string PreFormattedMessage = $" {message} ";
-                SymbolStringLength = PreFormattedMessage.Length + LengthModifier;
-                FormattedMessage = PadCenter(PreFormattedMessage, SymbolStringLength, symbol);
-                SymbolString = new(symbol, SymbolStringLength);
-
-                Console.WriteLine(SymbolString);
+                string PreformatedLine = $" {line} ";
+                FormattedMessage = PadCenter(PreformatedLine, SymbolStringLength, symbol);
                 Console.WriteLine(FormattedMessage);
-                Console.WriteLine(SymbolString);
-                Console.WriteLine();
             }
+            Console.WriteLine(SymbolString);
+            Console.WriteLine();
         }
 
         public string PadCenter(string source, int length, char symbol = '*')
